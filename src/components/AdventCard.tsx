@@ -1,13 +1,13 @@
-import type { DailyUpdate } from '../types/update';
-import { cn } from '../lib/utils';
-import { Lock, CheckCircle2, Calendar } from 'lucide-react';
+import type { DailyUpdate, Project } from '../types/update';
+import { Lock, Check, Clock } from 'lucide-react';
 
 interface AdventCardProps {
   update: DailyUpdate;
+  project: Project | undefined;
   onClick: () => void;
 }
 
-export function AdventCard({ update, onClick }: AdventCardProps) {
+export function AdventCard({ update, project, onClick }: AdventCardProps) {
   const isLocked = update.status === 'locked';
   const isReleased = update.status === 'released';
   const isUpcoming = update.status === 'upcoming';
@@ -16,64 +16,51 @@ export function AdventCard({ update, onClick }: AdventCardProps) {
     <button
       onClick={onClick}
       disabled={isLocked}
-      className={cn(
-        "relative group overflow-hidden rounded-lg border-2 transition-all duration-300 aspect-square",
-        "hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
-        isLocked && "opacity-50 cursor-not-allowed hover:scale-100",
-        isReleased && "border-primary bg-gradient-to-br from-primary/10 to-secondary/10",
-        isUpcoming && "border-secondary bg-gradient-to-br from-secondary/10 to-primary/10",
-        isLocked && "border-muted bg-muted/20"
-      )}
+      className={`
+        relative border-4 border-foreground p-4 pixel-border retro-hover
+        disabled:opacity-50 disabled:cursor-not-allowed
+        aspect-square flex flex-col items-center justify-center
+        ${isLocked ? 'bg-muted hover:transform-none hover:shadow-none' : 'bg-background'}
+      `}
+      style={{
+        backgroundColor: isLocked ? undefined : (isReleased ? project?.color + '20' : undefined)
+      }}
     >
-      {/* Background Pattern */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-5" />
-
-      {/* Content */}
-      <div className="relative h-full flex flex-col items-center justify-center p-4">
-        {/* Day Number */}
-        <div className={cn(
-          "text-4xl font-bold mb-2",
-          isReleased && "text-primary",
-          isUpcoming && "text-secondary",
-          isLocked && "text-muted-foreground"
-        )}>
-          {update.day}
+      {/* Project indicator */}
+      {project && !isLocked && (
+        <div
+          className="absolute top-2 right-2 text-xl border-2 border-foreground p-1"
+          style={{ backgroundColor: project.color }}
+        >
+          {project.emoji}
         </div>
+      )}
 
-        {/* Status Icon */}
-        <div className="mb-2">
-          {isReleased && <CheckCircle2 className="w-6 h-6 text-primary" />}
-          {isUpcoming && <Calendar className="w-6 h-6 text-secondary" />}
-          {isLocked && <Lock className="w-6 h-6 text-muted-foreground" />}
-        </div>
-
-        {/* Version Badge */}
-        {!isLocked && (
-          <div className={cn(
-            "text-xs px-2 py-1 rounded-full font-medium",
-            isReleased && "bg-primary/20 text-primary",
-            isUpcoming && "bg-secondary/20 text-secondary"
-          )}>
-            {update.version}
-          </div>
-        )}
-
-        {/* Hover Overlay */}
-        {!isLocked && (
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
-            <p className="text-white text-sm font-medium text-center w-full line-clamp-2">
-              {update.title}
-            </p>
-          </div>
-        )}
+      {/* Day number */}
+      <div className="text-3xl font-bold mb-2">
+        {update.day}
       </div>
 
-      {/* Sparkle Effect for Released */}
-      {isReleased && (
-        <div className="absolute top-2 right-2">
-          <div className="w-3 h-3 bg-primary rounded-full animate-ping" />
+      {/* Status icon */}
+      <div className="mb-2">
+        {isReleased && <Check className="w-6 h-6" strokeWidth={3} />}
+        {isUpcoming && <Clock className="w-6 h-6" strokeWidth={3} />}
+        {isLocked && <Lock className="w-6 h-6" strokeWidth={3} />}
+      </div>
+
+      {/* Version badge */}
+      {!isLocked && (
+        <div className="text-xs border-2 border-foreground px-2 py-1 bg-background font-mono font-bold">
+          {update.version}
         </div>
       )}
+
+      {/* Status label */}
+      <div className="absolute bottom-2 left-2 text-xs font-bold uppercase">
+        {isReleased && <span className="text-green-600">✓ SHIPPED</span>}
+        {isUpcoming && <span className="text-blue-600">→ WIP</span>}
+        {isLocked && <span className="text-gray-500">✕ LOCKED</span>}
+      </div>
     </button>
   );
 }

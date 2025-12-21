@@ -1,61 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    /* Brutalist color palette */
+    --background: 0 0% 98%;
+    --foreground: 0 0% 5%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 0 0% 5%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 346 77% 49%;
-    --primary-foreground: 355 85% 97%;
-    --secondary: 142 76% 36%;
-    --secondary-foreground: 144 61% 11%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 346 77% 49%;
-    --radius: 0.5rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-  }
+    --popover-foreground: 0 0% 5%;
 
-  .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 346 77% 49%;
-    --primary-foreground: 355 85% 97%;
-    --secondary: 142 76% 36%;
-    --secondary-foreground: 144 61% 20%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 346 77% 49%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    /* Bold retro colors */
+    --primary: 329 100% 50%; /* Hot Pink #FF006E */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 262 83% 58%; /* Purple #8338EC */
+    --secondary-foreground: 0 0% 100%;
+    --accent: 217 100% 62%; /* Blue #3A86FF */
+    --accent-foreground: 0 0% 100%;
+
+    --muted: 0 0% 85%;
+    --muted-foreground: 0 0% 35%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Brutalist borders - no radius! */
+    --border: 0 0% 10%;
+    --input: 0 0% 10%;
+    --ring: 329 100% 50%;
+    --radius: 0rem; /* NO ROUNDED CORNERS */
   }
 }
 
@@ -63,28 +39,162 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
+    font-family: 'Space Mono', monospace;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Press Start 2P', cursive;
+    line-height: 1.6;
+  }
+
+  /* Remove all rounded corners globally */
+  button, input, textarea, select, div {
+    border-radius: 0 !important;
   }
 }
 
 @layer utilities {
-  .bg-grid-pattern {
-    background-image: linear-gradient(to right, currentColor 1px, transparent 1px),
-      linear-gradient(to bottom, currentColor 1px, transparent 1px);
-    background-size: 20px 20px;
+  /* Pixel border effect */
+  .pixel-border {
+    box-shadow:
+      0 0 0 2px var(--foreground),
+      4px 4px 0 0 var(--foreground);
   }
 
-  .animate-spin-slow {
-    animation: spin 8s linear infinite;
+  .pixel-border-sm {
+    box-shadow:
+      0 0 0 2px var(--foreground),
+      2px 2px 0 0 var(--foreground);
+  }
+
+  .pixel-border-lg {
+    box-shadow:
+      0 0 0 3px var(--foreground),
+      6px 6px 0 0 var(--foreground);
+  }
+
+  /* Retro hover effect */
+  .retro-hover {
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+
+  .retro-hover:hover {
+    transform: translate(-2px, -2px);
+    box-shadow:
+      0 0 0 2px var(--foreground),
+      6px 6px 0 0 var(--foreground);
+  }
+
+  .retro-hover:active {
+    transform: translate(2px, 2px);
+    box-shadow:
+      0 0 0 2px var(--foreground),
+      2px 2px 0 0 var(--foreground);
+  }
+
+  /* Pixel grid pattern */
+  .pixel-grid {
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 4px,
+        rgba(0, 0, 0, 0.03) 4px,
+        rgba(0, 0, 0, 0.03) 8px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 4px,
+        rgba(0, 0, 0, 0.03) 4px,
+        rgba(0, 0, 0, 0.03) 8px
+      );
+  }
+
+  /* Glitch effect */
+  .glitch {
+    position: relative;
+  }
+
+  .glitch:hover::before,
+  .glitch:hover::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .glitch:hover::before {
+    animation: glitch-1 0.3s infinite;
+    color: #FF006E;
+    z-index: -1;
+  }
+
+  .glitch:hover::after {
+    animation: glitch-2 0.3s infinite;
+    color: #3A86FF;
+    z-index: -2;
+  }
+
+  /* Scanline effect */
+  .scanlines {
+    position: relative;
+  }
+
+  .scanlines::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.03),
+      rgba(0, 0, 0, 0.03) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+    pointer-events: none;
   }
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+@keyframes glitch-1 {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-2px); }
+  40% { transform: translateX(2px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes glitch-2 {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(2px); }
+  40% { transform: translateX(-2px); }
+  60% { transform: translateX(2px); }
+  80% { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+  border: 2px solid var(--foreground);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--foreground);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
 }
