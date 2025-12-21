@@ -1,0 +1,47 @@
+{
+  "projectTitle": "Build in Public - December 2025",
+  "projectDescription": "Daily product updates showcasing my 25-day build journey. Every day, a new version is released - broken or not - to demonstrate execution and progress.",
+  "month": "December",
+  "year": 2025,
+  "updates": [
+    {
+      "day": 1,
+      "date": "2025-12-01",
+      "title": "Project Kickoff - Advent Calendar",
+      "description": "Initial setup of the build-in-public advent calendar. Created the foundation with React, Tailwind CSS, and Shadcn UI. This platform will host all 25 days of daily product releases.",
+      "highlights": [
+        "Set up React + Vite project",
+        "Integrated Tailwind CSS and Shadcn UI",
+        "Created advent calendar UI",
+        "Implemented daily update system"
+      ],
+      "version": "v0.1.0",
+      "status": "released",
+      "tags": ["setup", "frontend", "ui"]
+    },
+    {
+      "day": 2,
+      "date": "2025-12-02",
+      "title": "Day 2 - Coming Soon",
+      "description": "Add your Day 2 update here. Remember: ship it even if it's broken!",
+      "highlights": [
+        "Your highlight 1",
+        "Your highlight 2",
+        "Your highlight 3"
+      ],
+      "version": "v0.2.0",
+      "status": "upcoming",
+      "tags": []
+    },
+    {
+      "day": 3,
+      "date": "2025-12-03",
+      "title": "Day 3",
+      "description": "Coming soon...",
+      "highlights": [],
+      "version": "v0.3.0",
+      "status": "locked",
+      "tags": []
+    }
+  ]
+}
