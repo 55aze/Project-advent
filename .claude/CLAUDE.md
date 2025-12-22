@@ -1,65 +1,50 @@
 # Project Instructions for Claude Code
 
-## 🚨 GIT COMMIT POLICY - CRITICAL
-
-**NEVER commit changes unless explicitly instructed by the user.**
-
-### Rules:
-- ❌ **DO NOT** run `git commit` automatically
-- ❌ **DO NOT** run `git push` automatically
-- ❌ **DO NOT** assume the user wants changes committed
-- ✅ **ONLY** commit when user explicitly says:
-  - "commit these changes"
-  - "git commit"
-  - "push to git"
-  - "save this to git"
-
----
-
 ## 🚀 Development & Deployment Workflow
 
 **Context:** User codes on phone via Claude Code web. Localhost doesn't work. Vercel is connected for auto-deploy.
 
-### Standard Flow (Feature Branch → Preview → Production):
+### Automated Phone-Friendly Flow:
 
-1. **Make Changes** - Edit code as requested
-
+#### Phase 1: Development & Preview (Automated)
+1. **Make Changes** - Claude edits code as requested
 2. **Build Check** - ALWAYS run `npm run build` first
    - ✅ If passes: Safe to commit
    - ❌ If fails: Fix errors, DON'T commit yet
+3. **Auto-Commit & Push to Feature Branch**
+   - Automatically commit with descriptive message
+   - Push to `claude/feature-name-sessionID` branch
+   - Vercel auto-deploys preview URL
+4. **Tell User to Review**
+   - Provide Vercel preview URL (check Vercel dashboard)
+   - User reviews on phone
+   - WAIT for user approval
 
-3. **Commit to Feature Branch** (when user approves)
-   ```bash
-   git add .
-   git commit -m "descriptive message"
-   git push origin claude/feature-name-sessionID
-   ```
-
-4. **Vercel Auto-Deploys Preview**
-   - Each push to any branch gets instant preview URL
-   - User checks preview on phone
-   - Feature branch = safe space for iteration
-
-5. **If Issues Found:**
-   - Make more changes
-   - Run build check
-   - Commit + push to SAME branch
-   - New preview URL generated
-   - Repeat until happy
-
-6. **If Happy with Preview:**
-   - Merge feature branch → production branch
-   - Vercel deploys to production
-   - Feature complete!
+#### Phase 2: Deploy to Production (Manual Approval Required)
+5. **User Reviews Preview**
+   - If issues found: Make more changes, repeat from step 1
+   - If happy: User says **"push to main"** or **"deploy to production"**
+6. **Merge to Production** (only when user approves)
+   - Merge feature branch → `claude/christmas-product-build-gOaqd` (production branch)
+   - Push to production branch
+   - Vercel auto-deploys to production
+   - Done! 🎉
 
 ### Key Principles:
 - 🛡️ **Build verification prevents broken commits**
-- 🔀 **Feature branches are safe for iteration**
-- 🚫 **Never commit directly to production without testing**
-- 📱 **All previews accessible on phone**
+- 🔀 **Feature branches auto-deploy for preview**
+- 🚫 **Production requires explicit user approval**
+- 📱 **All previews accessible on phone via Vercel**
 - ⚡ **Quick rollback if needed:** `git revert HEAD && git push`
+- 🤖 **Automated preview, manual production**
 
-**Note:** Since localhost doesn't work in Claude Code web, Vercel preview deployments are the primary way to see changes before production.
+### Production Branch:
+- Main production branch: `claude/christmas-product-build-gOaqd`
+- Only merge here when user explicitly approves with:
+  - "push to main"
+  - "deploy to production"
+  - "merge to production"
+  - "looks good, deploy it"
 
 ---
 
