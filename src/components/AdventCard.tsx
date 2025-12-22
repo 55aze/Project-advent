@@ -17,57 +17,70 @@ export function AdventCard({ update, project, onClick }: AdventCardProps) {
       onClick={onClick}
       disabled={isLocked}
       className={`
-        relative border-4 border-foreground p-4 pixel-border retro-hover
-        disabled:opacity-50 disabled:cursor-not-allowed
+        relative border-4 border-foreground p-6 pixel-border retro-hover
+        disabled:opacity-40 disabled:cursor-not-allowed
         aspect-square flex flex-col items-center justify-center
-        ${isLocked ? 'bg-muted hover:transform-none hover:shadow-none' : 'bg-background'}
+        transition-all duration-200
+        ${isLocked ? 'hover:transform-none hover:shadow-none' : ''}
       `}
       style={{
-        backgroundColor: isLocked ? undefined : (isReleased ? project?.color + '20' : undefined)
+        backgroundColor: isLocked
+          ? undefined
+          : (isReleased && project ? `${project.color}15` : undefined)
       }}
     >
-      {/* Project indicator */}
+      {/* Project badge - top right */}
       {project && !isLocked && (
         <div
-          className="absolute top-2 right-2 text-xl border-2 border-foreground p-1"
+          className="absolute top-2 right-2 text-base border-2 border-foreground p-1.5 pixel-border-sm"
           style={{ backgroundColor: project.color }}
         >
           {project.emoji}
         </div>
       )}
 
-      {/* Calendar Date */}
-      <div className="text-center mb-2">
-        <div className="text-xs font-mono text-muted-foreground uppercase">
-          {new Date(update.date).toLocaleDateString('en-US', { month: 'short' })}
+      {/* Status badge - top left */}
+      <div className="absolute top-2 left-2">
+        {isReleased && (
+          <div className="px-2 py-1 bg-green-500 border-2 border-foreground text-white text-xs font-bold uppercase">
+            DONE
+          </div>
+        )}
+        {isUpcoming && (
+          <div className="px-2 py-1 bg-blue-500 border-2 border-foreground text-white text-xs font-bold uppercase">
+            WIP
+          </div>
+        )}
+        {isLocked && (
+          <div className="px-2 py-1 bg-gray-400 border-2 border-foreground text-white text-xs font-bold uppercase">
+            LOCKED
+          </div>
+        )}
+      </div>
+
+      {/* Main content - DAY NUMBER IS HERO */}
+      <div className="flex flex-col items-center justify-center flex-1 w-full">
+        {/* HUGE Day Number */}
+        <div className="text-6xl md:text-7xl font-bold leading-none mb-2">
+          {update.day}
         </div>
-        <div className="text-3xl font-bold">
-          {new Date(update.date).getDate()}
+
+        {/* Small day label */}
+        <div className="text-xs font-mono font-bold uppercase tracking-wider opacity-60 mb-3">
+          DAY
         </div>
-        <div className="text-xs font-mono font-bold">
-          DAY {update.day}
+
+        {/* Calendar date - small and subtle */}
+        <div className="flex items-center gap-1 text-xs font-mono opacity-50">
+          <span>{new Date(update.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
         </div>
       </div>
 
-      {/* Status icon */}
-      <div className="mb-2">
-        {isReleased && <Check className="w-6 h-6" strokeWidth={3} />}
-        {isUpcoming && <Clock className="w-6 h-6" strokeWidth={3} />}
-        {isLocked && <Lock className="w-6 h-6" strokeWidth={3} />}
-      </div>
-
-      {/* Version badge */}
-      {!isLocked && (
-        <div className="text-xs border-2 border-foreground px-2 py-1 bg-background font-mono font-bold">
-          {update.version}
-        </div>
-      )}
-
-      {/* Status label */}
-      <div className="absolute bottom-2 left-2 text-xs font-bold uppercase">
-        {isReleased && <span className="text-green-600">✓ SHIPPED</span>}
-        {isUpcoming && <span className="text-blue-600">→ WIP</span>}
-        {isLocked && <span className="text-gray-500">✕ LOCKED</span>}
+      {/* Bottom - Status icon */}
+      <div className="absolute bottom-3">
+        {isReleased && <Check className="w-5 h-5" strokeWidth={4} />}
+        {isUpcoming && <Clock className="w-5 h-5" strokeWidth={4} />}
+        {isLocked && <Lock className="w-5 h-5 opacity-50" strokeWidth={4} />}
       </div>
     </button>
   );

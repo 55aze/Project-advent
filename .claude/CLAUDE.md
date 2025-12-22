@@ -16,9 +16,13 @@
 
 ### Workflow:
 1. Make code changes as requested
-2. Let user test locally with `npm run dev`
-3. Wait for explicit commit instruction
-4. Only then: `git add`, `git commit`, `git push`
+2. Run `npm run build` to verify no errors
+3. **Always push to Vercel to see changes live**
+4. User reviews changes on Vercel
+5. Wait for explicit approval to commit
+6. Only after approval: `git add`, `git commit`, `git push`
+
+**Note:** Since localhost doesn't work in Claude Code web, always deploy to Vercel first for user to review changes before committing.
 
 ---
 

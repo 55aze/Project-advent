@@ -78,39 +78,43 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
 
   return (
     <div className="min-h-screen bg-background pixel-grid">
-      {/* Header */}
-      <header className="border-b-4 border-foreground bg-background">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="lg:hidden border-2 border-foreground p-2 pixel-border-sm retro-hover"
-              >
-                {sidebarOpen ? <X strokeWidth={3} /> : <Menu strokeWidth={3} />}
-              </button>
-              <div>
-                <h1 className="text-2xl md:text-4xl font-bold mb-2">
-                  {data.title.toUpperCase()}
-                </h1>
-                <p className="text-sm md:text-base font-mono max-w-2xl">
-                  {data.description}
-                </p>
+      {/* Header - Redesigned for impact */}
+      <header className="border-b-4 border-foreground bg-foreground text-background">
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1">
+              {/* Main title - bigger and bolder */}
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
+                {data.title.toUpperCase()}
+              </h1>
+              <p className="text-sm md:text-base font-mono opacity-80 max-w-2xl mb-6">
+                {data.description}
+              </p>
+
+              {/* Stats - horizontal badges */}
+              <div className="flex flex-wrap gap-3 text-xs font-mono font-bold">
+                <div className="flex items-center gap-2 px-4 py-2 bg-green-500 border-2 border-background">
+                  <span className="text-2xl">{stats.released}</span>
+                  <span>SHIPPED</span>
+                </div>
+                <div className="flex items-center gap-2 px-4 py-2 bg-blue-500 border-2 border-background">
+                  <span className="text-2xl">{stats.upcoming}</span>
+                  <span>IN PROGRESS</span>
+                </div>
+                <div className="flex items-center gap-2 px-4 py-2 bg-gray-600 border-2 border-background">
+                  <span className="text-2xl">{25 - stats.released - stats.upcoming}</span>
+                  <span>REMAINING</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Stats */}
-          <div className="mt-4 flex flex-wrap gap-2 text-xs font-mono font-bold">
-            <div className="border-2 border-foreground px-3 py-1 bg-green-500 text-white">
-              ✓ {stats.released} SHIPPED
-            </div>
-            <div className="border-2 border-foreground px-3 py-1 bg-blue-500 text-white">
-              → {stats.upcoming} WIP
-            </div>
-            <div className="border-2 border-foreground px-3 py-1 bg-gray-400 text-white">
-              ✕ {stats.locked} LOCKED
-            </div>
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="lg:hidden border-2 border-background p-2 pixel-border-sm bg-background text-foreground"
+            >
+              {sidebarOpen ? <X strokeWidth={3} /> : <Menu strokeWidth={3} />}
+            </button>
           </div>
         </div>
       </header>
