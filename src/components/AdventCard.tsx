@@ -18,10 +18,11 @@ export function AdventCard({ update, project, onClick }: AdventCardProps) {
       disabled={isLocked}
       className={`
         relative border-4 border-foreground p-6 pixel-border retro-hover
-        disabled:opacity-40 disabled:cursor-not-allowed
+        disabled:cursor-not-allowed
         aspect-square flex flex-col items-center justify-center
         transition-all duration-200
-        ${isLocked ? 'hover:transform-none hover:shadow-none' : ''}
+        ${isLocked ? 'bg-gray-200 opacity-50 hover:transform-none hover:shadow-none grayscale' : ''}
+        ${isUpcoming && !isReleased ? 'opacity-70' : ''}
       `}
       style={{
         backgroundColor: isLocked
