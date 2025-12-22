@@ -12,76 +12,89 @@ export function AdventCard({ update, project, onClick }: AdventCardProps) {
   const isReleased = update.status === 'released';
   const isUpcoming = update.status === 'upcoming';
 
+  // Get day of week
+  const dayOfWeek = new Date(update.date).toLocaleDateString('en-US', { weekday: 'long' });
+
   return (
     <button
       onClick={onClick}
       disabled={isLocked}
       className={`
-        relative border-4 border-foreground p-6 pixel-border retro-hover
+        group relative border-4 border-foreground pixel-border retro-hover
         disabled:cursor-not-allowed
-        aspect-square flex flex-col items-center justify-center
-        transition-all duration-200
+        flex flex-col bg-background
+        transition-all duration-200 text-left overflow-hidden
         ${isLocked ? 'bg-gray-200 opacity-50 hover:transform-none hover:shadow-none grayscale' : ''}
         ${isUpcoming && !isReleased ? 'opacity-70' : ''}
       `}
-      style={{
-        backgroundColor: isLocked
-          ? undefined
-          : (isReleased && project ? `${project.color}15` : undefined)
-      }}
     >
-      {/* Project badge - top right */}
+      {/* Colored bottom border */}
       {project && !isLocked && (
         <div
-          className="absolute top-2 right-2 text-base border-2 border-foreground p-1.5 pixel-border-sm"
+          className="absolute bottom-0 left-0 right-0 h-2"
           style={{ backgroundColor: project.color }}
-        >
-          {project.emoji}
-        </div>
+        />
       )}
 
-      {/* Status badge - top left */}
-      <div className="absolute top-2 left-2">
-        {isReleased && (
-          <div className="px-2 py-1 bg-green-500 border-2 border-foreground text-white text-xs font-bold uppercase">
-            DONE
+      {/* Card content */}
+      <div className="p-6 flex flex-col gap-4 flex-1">
+        {/* Header with day number */}
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-shrink-0">
+            <div className="w-12 h-12 border-2 border-foreground flex items-center justify-center bg-background">
+              <span className="text-2xl font-bold">{update.day}</span>
+            </div>
           </div>
-        )}
-        {isUpcoming && (
-          <div className="px-2 py-1 bg-blue-500 border-2 border-foreground text-white text-xs font-bold uppercase">
-            WIP
-          </div>
-        )}
-        {isLocked && (
-          <div className="px-2 py-1 bg-gray-400 border-2 border-foreground text-white text-xs font-bold uppercase">
-            LOCKED
-          </div>
-        )}
-      </div>
 
-      {/* Main content - DAY NUMBER IS HERO */}
-      <div className="flex flex-col items-center justify-center flex-1 w-full">
-        {/* HUGE Day Number */}
-        <div className="text-6xl md:text-7xl font-bold leading-none mb-2">
-          {update.day}
+          {/* Status badge */}
+          <div className="flex-shrink-0">
+            {isReleased && (
+              <div className="px-2 py-1 bg-green-500 border-2 border-foreground text-white text-xs font-bold uppercase flex items-center gap-1">
+                <Check className="w-3 h-3" strokeWidth={3} />
+                DONE
+              </div>
+            )}
+            {isUpcoming && (
+              <div className="px-2 py-1 bg-blue-500 border-2 border-foreground text-white text-xs font-bold uppercase flex items-center gap-1">
+                <Clock className="w-3 h-3" strokeWidth={3} />
+                WIP
+              </div>
+            )}
+            {isLocked && (
+              <div className="px-2 py-1 bg-gray-400 border-2 border-foreground text-white text-xs font-bold uppercase flex items-center gap-1">
+                <Lock className="w-3 h-3" strokeWidth={3} />
+                LOCKED
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Small day label */}
-        <div className="text-xs font-mono font-bold uppercase tracking-wider opacity-60 mb-3">
-          DAY
+        {/* Day of week */}
+        <div className="text-sm font-mono uppercase tracking-wide opacity-60">
+          {dayOfWeek}
         </div>
 
-        {/* Calendar date - small and subtle */}
-        <div className="flex items-center gap-1 text-xs font-mono opacity-50">
-          <span>{new Date(update.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
-        </div>
-      </div>
+        {/* Title */}
+        <h3 className="font-bold text-xl leading-tight line-clamp-2">
+          {update.title}
+        </h3>
 
-      {/* Bottom - Status icon */}
-      <div className="absolute bottom-3">
-        {isReleased && <Check className="w-5 h-5" strokeWidth={4} />}
-        {isUpcoming && <Clock className="w-5 h-5" strokeWidth={4} />}
-        {isLocked && <Lock className="w-5 h-5 opacity-50" strokeWidth={4} />}
+        {/* Description */}
+        {!isLocked && (
+          <p className="text-sm leading-relaxed opacity-80 line-clamp-3 flex-1">
+            {update.description}
+          </p>
+        )}
+
+        {/* Footer with project name */}
+        {project && !isLocked && (
+          <div className="flex items-center gap-2 pt-2 border-t-2 border-foreground/20">
+            <span className="text-xl">{project.emoji}</span>
+            <span className="text-xs font-bold uppercase tracking-wide opacity-60">
+              {project.name}
+            </span>
+          </div>
+        )}
       </div>
     </button>
   );
