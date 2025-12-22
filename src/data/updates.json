@@ -11,20 +11,6 @@
       "description": "A brutalist web app to track daily product releases",
       "color": "#FF006E",
       "emoji": "🎯"
-    },
-    {
-      "id": "cli-tool",
-      "name": "DevSpeed CLI",
-      "description": "Command-line tool for developer productivity",
-      "color": "#8338EC",
-      "emoji": "⚡"
-    },
-    {
-      "id": "api-service",
-      "name": "QuickAPI",
-      "description": "Rapid API scaffolding service",
-      "color": "#3A86FF",
-      "emoji": "🚀"
     }
   ],
   "updates": [
@@ -68,17 +54,6 @@
       "version": "v0.2.0",
       "status": "released",
       "tags": ["ui-redesign", "dates", "documentation", "polish"]
-    },
-    {
-      "day": 3,
-      "date": "2025-12-23",
-      "projectId": "cli-tool",
-      "title": "Day 3 - Starting DevSpeed CLI",
-      "description": "Kick off a new project! Time to build a productivity CLI tool.",
-      "highlights": [],
-      "version": "v0.1.0",
-      "status": "locked",
-      "tags": []
     }
   ]
 }

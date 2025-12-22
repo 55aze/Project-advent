@@ -4,7 +4,9 @@ import { AdventCard } from './AdventCard';
 import { UpdateModal } from './UpdateModal';
 import { ProjectList } from './ProjectList';
 import { CalendarGrid } from './CalendarGrid';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Calendar, LayoutGrid } from 'lucide-react';
+
+type ViewMode = 'calendar' | 'cards';
 
 interface AdventCalendarProps {
   data: UpdatesData;
@@ -14,8 +16,9 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
   const [selectedUpdate, setSelectedUpdate] = useState<DailyUpdate | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProjectFilter, setSelectedProjectFilter] = useState<string | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // Closed by default on mobile
   const [currentMonth, setCurrentMonth] = useState(new Date(data.startDate));
+  const [viewMode, setViewMode] = useState<ViewMode>('calendar'); // Default to calendar view
 
   const handleCardClick = (update: DailyUpdate) => {
     if (update.status !== 'locked') {
@@ -111,57 +114,91 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
                 </div>
               </div>
             </div>
-
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="lg:hidden border-2 border-background p-2 pixel-border-sm bg-background text-foreground"
-            >
-              {sidebarOpen ? <X strokeWidth={3} /> : <Menu strokeWidth={3} />}
-            </button>
           </div>
         </div>
       </header>
 
       {/* Main content */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex gap-8">
-          {/* Sidebar */}
-          <aside
-            className={`
-              ${sidebarOpen ? 'block' : 'hidden'}
-              lg:block w-full lg:w-80 flex-shrink-0
-            `}
-          >
-            <div className="sticky top-8">
-              <ProjectList
-                projects={data.projects}
-                updates={data.updates}
-                selectedProject={selectedProjectFilter}
-                onSelectProject={setSelectedProjectFilter}
-              />
-            </div>
-          </aside>
+      <div className="container mx-auto px-4 py-6">
+        {/* View Switcher - Mobile optimized */}
+        <div className="mb-6 flex items-center justify-between gap-4 flex-wrap">
+          {/* View Toggle */}
+          <div className="flex border-4 border-foreground pixel-border overflow-hidden">
+            <button
+              onClick={() => setViewMode('calendar')}
+              className={`
+                flex items-center gap-2 px-4 py-3 font-bold uppercase text-sm transition-colors
+                ${viewMode === 'calendar'
+                  ? 'bg-foreground text-background'
+                  : 'bg-background text-foreground hover:bg-muted'
+                }
+              `}
+            >
+              <Calendar className="w-4 h-4" strokeWidth={3} />
+              <span className="hidden sm:inline">Calendar</span>
+            </button>
+            <div className="w-1 bg-foreground" />
+            <button
+              onClick={() => setViewMode('cards')}
+              className={`
+                flex items-center gap-2 px-4 py-3 font-bold uppercase text-sm transition-colors
+                ${viewMode === 'cards'
+                  ? 'bg-foreground text-background'
+                  : 'bg-background text-foreground hover:bg-muted'
+                }
+              `}
+            >
+              <LayoutGrid className="w-4 h-4" strokeWidth={3} />
+              <span className="hidden sm:inline">Cards</span>
+            </button>
+          </div>
 
-          {/* Main Content */}
-          <main className="flex-1 min-w-0 flex flex-col gap-8">
-            {/* Condensed Calendar */}
-            <div className="w-full max-w-2xl">
-              <CalendarGrid
-                updates={data.updates}
-                projects={data.projects}
-                currentMonth={currentMonth}
-                onMonthChange={setCurrentMonth}
-                selectedProject={selectedProjectFilter}
-                onDateClick={(update) => {
-                  if (update) handleCardClick(update);
-                }}
-              />
-            </div>
+          {/* Filter Toggle - Mobile friendly */}
+          {data.projects.length > 1 && (
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="flex items-center gap-2 border-4 border-foreground px-4 py-3 pixel-border retro-hover font-bold uppercase text-sm bg-background"
+            >
+              {sidebarOpen ? <X className="w-4 h-4" strokeWidth={3} /> : <Menu className="w-4 h-4" strokeWidth={3} />}
+              <span className="hidden sm:inline">Filter</span>
+            </button>
+          )}
+        </div>
 
+        {/* Mobile Filter Panel */}
+        {sidebarOpen && data.projects.length > 1 && (
+          <div className="mb-6 border-4 border-foreground pixel-border p-4 bg-background">
+            <ProjectList
+              projects={data.projects}
+              updates={data.updates}
+              selectedProject={selectedProjectFilter}
+              onSelectProject={setSelectedProjectFilter}
+            />
+          </div>
+        )}
+
+        {/* Calendar View - Full Width */}
+        {viewMode === 'calendar' && (
+          <div className="w-full">
+            <CalendarGrid
+              updates={data.updates}
+              projects={data.projects}
+              currentMonth={currentMonth}
+              onMonthChange={setCurrentMonth}
+              selectedProject={selectedProjectFilter}
+              onDateClick={(update) => {
+                if (update) handleCardClick(update);
+              }}
+            />
+          </div>
+        )}
+
+        {/* Cards View */}
+        {viewMode === 'cards' && (
+          <div className="w-full">
             {/* Project Filter Banner */}
             {selectedProjectFilter && (
-              <div className="p-4 border-4 border-foreground pixel-border bg-muted/50">
+              <div className="mb-6 p-4 border-4 border-foreground pixel-border bg-muted/50">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div
@@ -189,8 +226,8 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
               </div>
             )}
 
-            {/* Card Grid - 4 per row */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {/* Card Grid - Responsive */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
               {allDays.map((update) => (
                 <AdventCard
                   key={update.day}
@@ -200,8 +237,8 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
                 />
               ))}
             </div>
-          </main>
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Modal */}
