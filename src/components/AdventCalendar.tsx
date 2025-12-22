@@ -3,6 +3,7 @@ import type { DailyUpdate, UpdatesData, Project } from '../types/update';
 import { AdventCard } from './AdventCard';
 import { UpdateModal } from './UpdateModal';
 import { ProjectList } from './ProjectList';
+import { CalendarGrid } from './CalendarGrid';
 import { Menu, X } from 'lucide-react';
 
 interface AdventCalendarProps {
@@ -14,6 +15,7 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProjectFilter, setSelectedProjectFilter] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [currentMonth, setCurrentMonth] = useState(new Date(data.startDate));
 
   const handleCardClick = (update: DailyUpdate) => {
     if (update.status !== 'locked') {
@@ -36,12 +38,14 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
     ? data.updates.filter(u => u.projectId === selectedProjectFilter)
     : data.updates;
 
-  // Generate 25 days based on actual calendar dates
+  // Generate days for the current sprint (8 days: Dec 22-31)
   const startDate = new Date(data.startDate);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const allDays: DailyUpdate[] = Array.from({ length: 25 }, (_, i) => {
+  const sprintDays = 8; // Dec 22-31
+
+  const allDays: DailyUpdate[] = Array.from({ length: sprintDays }, (_, i) => {
     const day = i + 1;
     const currentDate = new Date(startDate);
     currentDate.setDate(startDate.getDate() + i);
@@ -73,7 +77,7 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
   const stats = {
     released: data.updates.filter(u => u.status === 'released').length,
     upcoming: data.updates.filter(u => u.status === 'upcoming').length,
-    locked: 25 - data.updates.length,
+    locked: sprintDays - data.updates.length,
   };
 
   return (
@@ -139,10 +143,25 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
             </div>
           </aside>
 
-          {/* Calendar Grid */}
-          <main className="flex-1 min-w-0">
+          {/* Main Content */}
+          <main className="flex-1 min-w-0 flex flex-col gap-8">
+            {/* Condensed Calendar */}
+            <div className="w-full max-w-2xl">
+              <CalendarGrid
+                updates={data.updates}
+                projects={data.projects}
+                currentMonth={currentMonth}
+                onMonthChange={setCurrentMonth}
+                selectedProject={selectedProjectFilter}
+                onDateClick={(update) => {
+                  if (update) handleCardClick(update);
+                }}
+              />
+            </div>
+
+            {/* Project Filter Banner */}
             {selectedProjectFilter && (
-              <div className="mb-6 p-4 border-4 border-foreground pixel-border bg-muted/50">
+              <div className="p-4 border-4 border-foreground pixel-border bg-muted/50">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div
@@ -170,7 +189,8 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
               </div>
             )}
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
+            {/* Card Grid - 4 per row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {allDays.map((update) => (
                 <AdventCard
                   key={update.day}

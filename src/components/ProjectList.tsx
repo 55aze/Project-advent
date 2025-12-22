@@ -57,8 +57,8 @@ export function ProjectList({ projects, updates, selectedProject, onSelectProjec
                     {project.description}
                   </p>
                   <div className="flex gap-2 text-xs font-mono">
-                    <span className="px-2 py-1 border border-current">
-                      {stats.released}/{stats.total} DAYS
+                    <span className="px-2 py-1 border border-current font-bold">
+                      {stats.released} RELEASED
                     </span>
                   </div>
                 </div>
