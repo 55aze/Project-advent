@@ -25,6 +25,7 @@ export interface DailyUpdate {
 export interface UpdatesData {
   title: string; // Overall challenge title
   description: string;
+  startDate: string; // Start date of the 25-day challenge (YYYY-MM-DD)
   month: string;
   year: number;
   projects: Project[];

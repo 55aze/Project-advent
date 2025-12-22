@@ -36,9 +36,17 @@ export function AdventCard({ update, project, onClick }: AdventCardProps) {
         </div>
       )}
 
-      {/* Day number */}
-      <div className="text-3xl font-bold mb-2">
-        {update.day}
+      {/* Calendar Date */}
+      <div className="text-center mb-2">
+        <div className="text-xs font-mono text-muted-foreground uppercase">
+          {new Date(update.date).toLocaleDateString('en-US', { month: 'short' })}
+        </div>
+        <div className="text-3xl font-bold">
+          {new Date(update.date).getDate()}
+        </div>
+        <div className="text-xs font-mono font-bold">
+          DAY {update.day}
+        </div>
       </div>
 
       {/* Status icon */}

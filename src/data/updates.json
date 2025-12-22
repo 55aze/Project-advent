@@ -1,6 +1,7 @@
 {
   "title": "25 Days of Shipping",
   "description": "Building different products in public. 25 days, multiple projects, daily releases. No excuses, just execution.",
+  "startDate": "2025-12-21",
   "month": "December",
   "year": 2025,
   "projects": [
@@ -29,7 +30,7 @@
   "updates": [
     {
       "day": 1,
-      "date": "2025-12-01",
+      "date": "2025-12-21",
       "projectId": "build-tracker",
       "title": "Initial Setup - Build Tracker",
       "description": "Created the foundation for the build tracker. Set up React, configured the brutalist design system, and implemented the basic calendar layout. This tool will help track all 25 days of shipping.",
@@ -46,7 +47,7 @@
     },
     {
       "day": 2,
-      "date": "2025-12-02",
+      "date": "2025-12-22",
       "projectId": "build-tracker",
       "title": "Day 2 - Project Pages",
       "description": "Add project detail pages and release history. Coming soon!",
@@ -61,7 +62,7 @@
     },
     {
       "day": 3,
-      "date": "2025-12-03",
+      "date": "2025-12-23",
       "projectId": "cli-tool",
       "title": "Day 3 - Starting DevSpeed CLI",
       "description": "Kick off a new project! Time to build a productivity CLI tool.",

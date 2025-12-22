@@ -36,22 +36,36 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
     ? data.updates.filter(u => u.projectId === selectedProjectFilter)
     : data.updates;
 
-  // Generate 25 days, filling in with locked days if not in data
+  // Generate 25 days based on actual calendar dates
+  const startDate = new Date(data.startDate);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   const allDays: DailyUpdate[] = Array.from({ length: 25 }, (_, i) => {
     const day = i + 1;
-    const existing = filteredUpdates.find(u => u.day === day);
+    const currentDate = new Date(startDate);
+    currentDate.setDate(startDate.getDate() + i);
+    const dateStr = currentDate.toISOString().split('T')[0];
+
+    // Find existing update for this date
+    const existing = filteredUpdates.find(u => u.date === dateStr);
     if (existing) return existing;
 
-    // Create a locked placeholder
+    // Determine status based on current date
+    const isPast = currentDate < today;
+    const isToday = currentDate.getTime() === today.getTime();
+    const status: 'released' | 'upcoming' | 'locked' = isPast || isToday ? 'upcoming' : 'locked';
+
+    // Create a placeholder
     return {
       day,
-      date: `${data.year}-${String(data.month).padStart(2, '0')}-${day.toString().padStart(2, '0')}`,
+      date: dateStr,
       projectId: '',
       title: `Day ${day}`,
       description: 'Coming soon...',
       highlights: [],
       version: `v0.${day}.0`,
-      status: 'locked' as const,
+      status,
       tags: []
     };
   });
