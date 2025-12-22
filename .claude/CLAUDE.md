@@ -27,7 +27,28 @@
 - **Project Name:** 25 Days of Shipping
 - **Type:** Multi-project build tracker
 - **Design Style:** Brutalist / Retro / Pixel Art
-- **Tech Stack:** React + TypeScript + Tailwind CSS + Vite
+
+---
+
+## 🛠️ Tech Stack
+
+### Core:
+- **React 18** - UI framework
+- **TypeScript** - Type safety
+- **Vite** - Build tool and dev server
+
+### UI & Styling:
+- **Tailwind CSS** - Utility-first styling
+- **Shadcn UI** - Accessible component library
+- **Radix UI** - Headless UI primitives
+- **Framer Motion** - Animation library
+- **SF Symbols** - Icon system
+
+### Design System:
+- Maintain consistent theming via `src/index.css`
+- Use CSS variables for colors and spacing
+- Follow design tokens in `.claude/skills/frontend-design/`
+- Reference component patterns for consistency
 
 ---
 
@@ -39,6 +60,7 @@
 - Bold colors: Hot Pink (#FF006E), Purple (#8338EC), Blue (#3A86FF)
 - Retro fonts: Press Start 2P (headings), Space Mono (body)
 - No gradients or soft shadows
+- Use pixel-border, pixel-border-sm, pixel-border-lg utility classes
 
 ---
 
