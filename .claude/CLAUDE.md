@@ -14,15 +14,52 @@
   - "push to git"
   - "save this to git"
 
-### Workflow:
-1. Make code changes as requested
-2. Run `npm run build` to verify no errors
-3. **Always push to Vercel to see changes live**
-4. User reviews changes on Vercel
-5. Wait for explicit approval to commit
-6. Only after approval: `git add`, `git commit`, `git push`
+---
 
-**Note:** Since localhost doesn't work in Claude Code web, always deploy to Vercel first for user to review changes before committing.
+## 🚀 Development & Deployment Workflow
+
+**Context:** User codes on phone via Claude Code web. Localhost doesn't work. Vercel is connected for auto-deploy.
+
+### Standard Flow (Feature Branch → Preview → Production):
+
+1. **Make Changes** - Edit code as requested
+
+2. **Build Check** - ALWAYS run `npm run build` first
+   - ✅ If passes: Safe to commit
+   - ❌ If fails: Fix errors, DON'T commit yet
+
+3. **Commit to Feature Branch** (when user approves)
+   ```bash
+   git add .
+   git commit -m "descriptive message"
+   git push origin claude/feature-name-sessionID
+   ```
+
+4. **Vercel Auto-Deploys Preview**
+   - Each push to any branch gets instant preview URL
+   - User checks preview on phone
+   - Feature branch = safe space for iteration
+
+5. **If Issues Found:**
+   - Make more changes
+   - Run build check
+   - Commit + push to SAME branch
+   - New preview URL generated
+   - Repeat until happy
+
+6. **If Happy with Preview:**
+   - Merge feature branch → production branch
+   - Vercel deploys to production
+   - Feature complete!
+
+### Key Principles:
+- 🛡️ **Build verification prevents broken commits**
+- 🔀 **Feature branches are safe for iteration**
+- 🚫 **Never commit directly to production without testing**
+- 📱 **All previews accessible on phone**
+- ⚡ **Quick rollback if needed:** `git revert HEAD && git push`
+
+**Note:** Since localhost doesn't work in Claude Code web, Vercel preview deployments are the primary way to see changes before production.
 
 ---
 
@@ -78,4 +115,4 @@ npm run preview      # Preview production build
 
 ---
 
-**Last Updated:** December 21, 2025
+**Last Updated:** December 22, 2025
