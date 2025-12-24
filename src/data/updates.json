@@ -11,6 +11,13 @@
       "description": "A brutalist web app to track daily product releases",
       "color": "#FF006E",
       "emoji": "🎯"
+    },
+    {
+      "id": "mind-galaxy",
+      "name": "Mind Galaxy",
+      "description": "AI-powered note-catching app to organize fleeting thoughts",
+      "color": "#8338EC",
+      "emoji": "🌌"
     }
   ],
   "updates": [
@@ -54,6 +61,25 @@
       "version": "v0.2.0",
       "status": "released",
       "tags": ["ui-redesign", "dates", "documentation", "polish"]
+    },
+    {
+      "day": 3,
+      "date": "2025-12-23",
+      "projectId": "mind-galaxy",
+      "title": "Mind Galaxy - Initial Setup",
+      "description": "Started a new AI-powered note-catching app to help capture and organize fleeting thoughts. Built with React, TypeScript, and Vite, integrated with Google Gemini API for intelligent thought organization. Designed to help users quickly sort their minds, unload mental burdens, and identify connections between ideas.",
+      "highlights": [
+        "React + TypeScript + Vite foundation",
+        "Google Gemini API integration for AI-powered organization",
+        "Project structure with components and services",
+        "Environment configuration for API keys",
+        "Initial repository setup and documentation",
+        "5 commits establishing core architecture"
+      ],
+      "version": "v0.1.0",
+      "status": "released",
+      "tags": ["setup", "ai", "note-taking", "gemini"],
+      "timeSpent": "3 hours"
     }
   ]
 }
