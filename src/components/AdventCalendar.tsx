@@ -2,9 +2,8 @@ import { useState } from 'react';
 import type { DailyUpdate, UpdatesData, Project } from '../types/update';
 import { AdventCard } from './AdventCard';
 import { UpdateModal } from './UpdateModal';
-import { ProjectList } from './ProjectList';
 import { CalendarGrid } from './CalendarGrid';
-import { Menu, X, Calendar, LayoutGrid } from 'lucide-react';
+import { Calendar, LayoutGrid } from 'lucide-react';
 
 type ViewMode = 'calendar' | 'cards';
 
@@ -16,7 +15,6 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
   const [selectedUpdate, setSelectedUpdate] = useState<DailyUpdate | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProjectFilter, setSelectedProjectFilter] = useState<string | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false); // Closed by default on mobile
   const [currentMonth, setCurrentMonth] = useState(new Date(data.startDate));
   const [viewMode, setViewMode] = useState<ViewMode>('calendar'); // Default to calendar view
 
@@ -99,13 +97,13 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
                   <span className="text-2xl">{stats.released}</span>
                   <span>SHIPPED</span>
                 </div>
+                <div className="flex items-center gap-2 px-4 py-2 bg-purple-500 border-2 border-background">
+                  <span className="text-2xl">{stats.released}/{sprintDays}</span>
+                  <span>DEC GOAL</span>
+                </div>
                 <div className="flex items-center gap-2 px-4 py-2 bg-blue-500 border-2 border-background">
                   <span className="text-2xl">{stats.upcoming}</span>
                   <span>IN PROGRESS</span>
-                </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-gray-600 border-2 border-background">
-                  <span className="text-2xl">{25 - stats.released - stats.upcoming}</span>
-                  <span>REMAINING</span>
                 </div>
               </div>
             </div>
@@ -115,10 +113,10 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
 
       {/* Main content */}
       <div className="container mx-auto px-4 py-6">
-        {/* View Switcher - Mobile optimized */}
-        <div className="mb-6 flex items-center justify-between gap-4 flex-wrap">
+        {/* View Switcher & Project Filters - Mobile optimized */}
+        <div className="mb-6 space-y-4">
           {/* View Toggle */}
-          <div className="flex border-4 border-foreground pixel-border overflow-hidden">
+          <div className="flex border-4 border-foreground pixel-border overflow-hidden w-fit">
             <button
               onClick={() => setViewMode('calendar')}
               className={`
@@ -148,29 +146,40 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
             </button>
           </div>
 
-          {/* Filter Toggle - Mobile friendly */}
+          {/* Project Filter Pills */}
           {data.projects.length > 1 && (
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="flex items-center gap-2 border-4 border-foreground px-4 py-3 pixel-border retro-hover font-bold uppercase text-sm bg-background"
-            >
-              {sidebarOpen ? <X className="w-4 h-4" strokeWidth={3} /> : <Menu className="w-4 h-4" strokeWidth={3} />}
-              <span className="hidden sm:inline">Filter</span>
-            </button>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setSelectedProjectFilter(null)}
+                className={`
+                  px-4 py-2 border-2 border-foreground font-bold uppercase text-xs pixel-border-sm transition-colors
+                  ${!selectedProjectFilter
+                    ? 'bg-foreground text-background'
+                    : 'bg-background text-foreground hover:bg-muted'
+                  }
+                `}
+              >
+                ALL PROJECTS
+              </button>
+              {data.projects.map((project) => (
+                <button
+                  key={project.id}
+                  onClick={() => setSelectedProjectFilter(project.id)}
+                  className={`
+                    px-4 py-2 border-2 border-foreground font-bold uppercase text-xs pixel-border-sm transition-colors flex items-center gap-2
+                    ${selectedProjectFilter === project.id
+                      ? 'bg-foreground text-background'
+                      : 'bg-background text-foreground hover:bg-muted'
+                    }
+                  `}
+                >
+                  <span>{project.emoji}</span>
+                  <span>{project.name}</span>
+                </button>
+              ))}
+            </div>
           )}
         </div>
-
-        {/* Mobile Filter Panel */}
-        {sidebarOpen && data.projects.length > 1 && (
-          <div className="mb-6 border-4 border-foreground pixel-border p-4 bg-background">
-            <ProjectList
-              projects={data.projects}
-              updates={data.updates}
-              selectedProject={selectedProjectFilter}
-              onSelectProject={setSelectedProjectFilter}
-            />
-          </div>
-        )}
 
         {/* Calendar View - Full Width */}
         {viewMode === 'calendar' && (
@@ -191,36 +200,6 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
         {/* Cards View */}
         {viewMode === 'cards' && (
           <div className="w-full">
-            {/* Project Filter Banner */}
-            {selectedProjectFilter && (
-              <div className="mb-6 p-4 border-4 border-foreground pixel-border bg-muted/50">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="text-3xl border-2 border-foreground p-2"
-                      style={{ backgroundColor: getProject(selectedProjectFilter)?.color }}
-                    >
-                      {getProject(selectedProjectFilter)?.emoji}
-                    </div>
-                    <div>
-                      <h2 className="font-bold text-lg uppercase">
-                        {getProject(selectedProjectFilter)?.name}
-                      </h2>
-                      <p className="text-sm font-mono">
-                        {getProject(selectedProjectFilter)?.description}
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setSelectedProjectFilter(null)}
-                    className="border-2 border-foreground px-3 py-1 pixel-border-sm retro-hover font-bold text-sm"
-                  >
-                    CLEAR
-                  </button>
-                </div>
-              </div>
-            )}
-
             {/* Card Grid - Responsive */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
               {allDays.map((update) => (

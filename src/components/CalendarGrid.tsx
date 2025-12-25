@@ -70,24 +70,24 @@ export function CalendarGrid({
   }
 
   return (
-    <div className="border-4 border-foreground pixel-border bg-background w-full">
-      {/* Header with month navigation - Touch friendly */}
-      <div className="border-b-4 border-foreground p-4 md:p-6 bg-foreground text-background">
+    <div className="border-4 border-foreground pixel-border bg-background w-full max-w-3xl">
+      {/* Header with month navigation - Compact */}
+      <div className="border-b-4 border-foreground p-3 bg-foreground text-background">
         <div className="flex items-center justify-between">
           <button
             onClick={handlePrevMonth}
-            className="p-2 md:p-3 hover:opacity-70 active:opacity-50 transition-opacity touch-manipulation"
+            className="p-2 hover:opacity-70 active:opacity-50 transition-opacity touch-manipulation"
             aria-label="Previous month"
           >
-            <ChevronLeft className="w-6 h-6 md:w-8 md:h-8" strokeWidth={3} />
+            <ChevronLeft className="w-5 h-5" strokeWidth={3} />
           </button>
-          <h3 className="font-bold text-base md:text-lg uppercase">{monthName}</h3>
+          <h3 className="font-bold text-sm md:text-base uppercase">{monthName}</h3>
           <button
             onClick={handleNextMonth}
-            className="p-2 md:p-3 hover:opacity-70 active:opacity-50 transition-opacity touch-manipulation"
+            className="p-2 hover:opacity-70 active:opacity-50 transition-opacity touch-manipulation"
             aria-label="Next month"
           >
-            <ChevronRight className="w-6 h-6 md:w-8 md:h-8" strokeWidth={3} />
+            <ChevronRight className="w-5 h-5" strokeWidth={3} />
           </button>
         </div>
       </div>
@@ -97,7 +97,7 @@ export function CalendarGrid({
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
           <div
             key={day}
-            className="p-2 md:p-3 text-center text-xs md:text-sm font-bold border-r-2 border-foreground last:border-r-0"
+            className="p-1.5 text-center text-xs font-bold border-r-2 border-foreground last:border-r-0"
           >
             {day}
           </div>
@@ -133,8 +133,8 @@ export function CalendarGrid({
               }}
               className={`
                 aspect-square border-r-2 border-b-2 border-foreground last:border-r-0
-                p-2 md:p-3 hover:bg-muted/50 active:bg-muted transition-colors relative
-                touch-manipulation min-h-[60px] md:min-h-[80px]
+                p-1.5 hover:bg-muted/50 active:bg-muted transition-colors relative
+                touch-manipulation min-h-[50px] md:min-h-[60px]
                 ${isCurrentDay ? 'bg-yellow-100' : ''}
                 ${!isPastDay && !isCurrentDay ? 'bg-gray-100 opacity-60' : ''}
                 ${dayUpdates.length > 0 ? 'cursor-pointer' : 'cursor-default'}
@@ -143,13 +143,13 @@ export function CalendarGrid({
               disabled={dayUpdates.length === 0}
             >
               {/* Day number */}
-              <div className={`text-sm md:text-base font-bold ${isCurrentDay ? 'text-yellow-700' : ''}`}>
+              <div className={`text-xs font-bold ${isCurrentDay ? 'text-yellow-700' : ''}`}>
                 {day}
               </div>
 
               {/* Project dots */}
               {dayUpdates.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-1 md:mt-2 justify-center">
+                <div className="flex flex-wrap gap-0.5 mt-1 justify-center">
                   {dayUpdates.map((update, idx) => {
                     const project = getProject(update.projectId);
                     if (!project) return null;
@@ -159,7 +159,7 @@ export function CalendarGrid({
                     return (
                       <div
                         key={idx}
-                        className={`w-2 h-2 md:w-3 md:h-3 rounded-full border border-foreground ${isFiltered ? 'opacity-30' : ''}`}
+                        className={`w-1.5 h-1.5 rounded-full border border-foreground ${isFiltered ? 'opacity-30' : ''}`}
                         style={{ backgroundColor: project.color }}
                         aria-label={`${project.name} project`}
                       />
@@ -170,8 +170,8 @@ export function CalendarGrid({
 
               {/* Status indicator */}
               {hasReleased && (
-                <div className="absolute bottom-1 right-1 md:bottom-2 md:right-2">
-                  <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-green-500 rounded-full" />
+                <div className="absolute bottom-0.5 right-0.5">
+                  <div className="w-1 h-1 bg-green-500 rounded-full" />
                 </div>
               )}
             </button>
