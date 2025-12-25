@@ -80,6 +80,43 @@
       "status": "released",
       "tags": ["setup", "ai", "note-taking", "gemini"],
       "timeSpent": "3 hours"
+    },
+    {
+      "day": 4,
+      "date": "2025-12-25",
+      "projectId": "build-tracker",
+      "title": "View Switcher & UX Polish",
+      "description": "Added calendar/cards view toggle and moved project filters to always-visible pills for easier navigation. Compact calendar design makes it easy to scan release dates at a glance, while the new monthly goal tracker (3/8 DEC GOAL) helps maintain sprint focus.",
+      "highlights": [
+        "Calendar/Cards view switcher with icon-only mobile design",
+        "Project filters as visible pills (ALL, BUILD TRACKER, MIND GALAXY)",
+        "Compact calendar - reduced sizing for better scanning",
+        "Monthly goal tracker badge (X/8 DEC GOAL)",
+        "Future cards hide dates until release",
+        "Only released items show actual dates",
+        "Improved mobile touch interactions"
+      ],
+      "version": "v0.3.0",
+      "status": "released",
+      "tags": ["ux", "navigation", "mobile", "goal-tracking"]
+    },
+    {
+      "day": 4,
+      "date": "2025-12-25",
+      "projectId": "mind-galaxy",
+      "title": "Visual Clustering & Node Design",
+      "description": "Enhanced thought visualization with improved cluster logic for stronger visual grouping of related nodes. Updated node design to minimal dots with hover text and top 3 connection highlighting, creating clearer relationship hierarchies.",
+      "highlights": [
+        "Tightened initial layout for better clustering",
+        "Leveraged existing physics parameters for stronger visual grouping",
+        "Minimal dot design for cleaner interface",
+        "Hover text for node details",
+        "Top 3 connection highlighting for relationship hierarchy",
+        "Clearer visualization of related thoughts"
+      ],
+      "version": "v0.2.0",
+      "status": "released",
+      "tags": ["visualization", "clustering", "ux", "design"]
     }
   ]
 }
