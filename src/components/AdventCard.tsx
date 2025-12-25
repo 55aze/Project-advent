@@ -74,10 +74,12 @@ export function AdventCard({ update, project, onClick, selectedProjectFilter }: 
           </div>
         </div>
 
-        {/* Date */}
-        <div className="text-sm font-mono uppercase tracking-wide opacity-60">
-          {formattedDate}
-        </div>
+        {/* Date - Only show for released items */}
+        {isReleased && (
+          <div className="text-sm font-mono uppercase tracking-wide opacity-60">
+            {formattedDate}
+          </div>
+        )}
 
         {/* Title */}
         <h3 className="font-bold text-xl leading-tight line-clamp-2">
