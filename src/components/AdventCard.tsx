@@ -5,15 +5,19 @@ interface AdventCardProps {
   update: DailyUpdate;
   project: Project | undefined;
   onClick: () => void;
+  selectedProjectFilter?: string | null;
 }
 
-export function AdventCard({ update, project, onClick }: AdventCardProps) {
+export function AdventCard({ update, project, onClick, selectedProjectFilter }: AdventCardProps) {
   const isLocked = update.status === 'locked';
   const isReleased = update.status === 'released';
   const isUpcoming = update.status === 'upcoming';
 
-  // Get day of week
-  const dayOfWeek = new Date(update.date).toLocaleDateString('en-US', { weekday: 'long' });
+  // Get formatted date (e.g., "Dec 21")
+  const formattedDate = new Date(update.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+  // Check if this card should be dimmed based on filter
+  const isDimmed = selectedProjectFilter && update.projectId !== selectedProjectFilter;
 
   return (
     <button
@@ -26,6 +30,7 @@ export function AdventCard({ update, project, onClick }: AdventCardProps) {
         transition-all duration-200 text-left overflow-hidden
         ${isLocked ? 'bg-gray-200 opacity-50 hover:transform-none hover:shadow-none grayscale' : ''}
         ${isUpcoming && !isReleased ? 'opacity-70' : ''}
+        ${isDimmed ? 'opacity-30' : ''}
       `}
     >
       {/* Colored bottom border */}
@@ -69,9 +74,9 @@ export function AdventCard({ update, project, onClick }: AdventCardProps) {
           </div>
         </div>
 
-        {/* Day of week */}
+        {/* Date */}
         <div className="text-sm font-mono uppercase tracking-wide opacity-60">
-          {dayOfWeek}
+          {formattedDate}
         </div>
 
         {/* Title */}

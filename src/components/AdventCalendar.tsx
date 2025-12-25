@@ -36,11 +36,6 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
     return data.projects.find(p => p.id === projectId);
   };
 
-  // Filter updates based on selected project
-  const filteredUpdates = selectedProjectFilter
-    ? data.updates.filter(u => u.projectId === selectedProjectFilter)
-    : data.updates;
-
   // Generate days for the current sprint (8 days: Dec 22-31)
   const startDate = new Date(data.startDate);
   const today = new Date();
@@ -55,7 +50,7 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
     const dateStr = currentDate.toISOString().split('T')[0];
 
     // Find existing update for this date
-    const existing = filteredUpdates.find(u => u.date === dateStr);
+    const existing = data.updates.find(u => u.date === dateStr);
     if (existing) return existing;
 
     // Determine status based on current date
@@ -234,6 +229,7 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
                   update={update}
                   project={getProject(update.projectId)}
                   onClick={() => handleCardClick(update)}
+                  selectedProjectFilter={selectedProjectFilter}
                 />
               ))}
             </div>

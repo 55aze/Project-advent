@@ -121,6 +121,9 @@ export function CalendarGrid({
           const isCurrentDay = isToday(day);
           const isPastDay = isPast(day);
 
+          // Check if this day should be dimmed based on filter
+          const shouldDim = selectedProject && dayUpdates.length > 0 && dayUpdates.every(u => u.projectId !== selectedProject);
+
           return (
             <button
               key={day}
@@ -135,6 +138,7 @@ export function CalendarGrid({
                 ${isCurrentDay ? 'bg-yellow-100' : ''}
                 ${!isPastDay && !isCurrentDay ? 'bg-gray-100 opacity-60' : ''}
                 ${dayUpdates.length > 0 ? 'cursor-pointer' : 'cursor-default'}
+                ${shouldDim ? 'opacity-30' : ''}
               `}
               disabled={dayUpdates.length === 0}
             >
