@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { DailyUpdate, Project } from '../types/update';
 import { Lock, Check, Clock } from 'lucide-react';
 
@@ -6,18 +7,38 @@ interface AdventCardProps {
   project: Project | undefined;
   onClick: () => void;
   selectedProjectFilter?: string | null;
+  allProjects: Project[];
 }
 
-export function AdventCard({ update, project, onClick, selectedProjectFilter }: AdventCardProps) {
+export function AdventCard({ update, project, onClick, selectedProjectFilter, allProjects }: AdventCardProps) {
+  const [activeTab, setActiveTab] = useState(0);
+
   const isLocked = update.status === 'locked';
   const isReleased = update.status === 'released';
   const isUpcoming = update.status === 'upcoming';
+  const hasMultipleProjects = update.projectUpdates && update.projectUpdates.length > 0;
 
   // Get formatted date (e.g., "Dec 21")
   const formattedDate = new Date(update.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
   // Check if this card should be dimmed based on filter
-  const isDimmed = selectedProjectFilter && update.projectId !== selectedProjectFilter;
+  const isDimmed = selectedProjectFilter && !hasMultipleProjects && update.projectId !== selectedProjectFilter;
+
+  // For multi-project cards, check if any project matches the filter
+  const hasFilteredProject = hasMultipleProjects && update.projectUpdates?.some(pu => pu.projectId === selectedProjectFilter);
+  const isMultiProjectDimmed = selectedProjectFilter && hasMultipleProjects && !hasFilteredProject;
+
+  // Get current content based on active tab
+  const currentContent = hasMultipleProjects && update.projectUpdates
+    ? update.projectUpdates[activeTab]
+    : null;
+
+  const currentProject = currentContent
+    ? allProjects.find(p => p.id === currentContent.projectId)
+    : project;
+
+  const displayTitle = currentContent ? currentContent.title : update.title;
+  const displayDescription = currentContent ? currentContent.description : update.description;
 
   return (
     <button
@@ -30,14 +51,14 @@ export function AdventCard({ update, project, onClick, selectedProjectFilter }: 
         transition-all duration-200 text-left overflow-hidden
         ${isLocked ? 'bg-gray-200 opacity-50 hover:transform-none hover:shadow-none grayscale' : ''}
         ${isUpcoming && !isReleased ? 'opacity-70' : ''}
-        ${isDimmed ? 'opacity-30' : ''}
+        ${isDimmed || isMultiProjectDimmed ? 'opacity-30' : ''}
       `}
     >
       {/* Colored bottom border */}
-      {project && !isLocked && (
+      {currentProject && !isLocked && (
         <div
           className="absolute bottom-0 left-0 right-0 h-2"
-          style={{ backgroundColor: project.color }}
+          style={{ backgroundColor: currentProject.color }}
         />
       )}
 
@@ -81,25 +102,66 @@ export function AdventCard({ update, project, onClick, selectedProjectFilter }: 
           </div>
         )}
 
+        {/* Multi-project tabs */}
+        {hasMultipleProjects && update.projectUpdates && (
+          <div className="flex gap-1 border-2 border-foreground overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            {update.projectUpdates.map((pu, index) => {
+              const tabProject = allProjects.find(p => p.id === pu.projectId);
+              return (
+                <button
+                  key={pu.projectId}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveTab(index);
+                  }}
+                  className={`
+                    flex-1 px-3 py-1.5 text-xs font-bold uppercase transition-colors
+                    ${activeTab === index
+                      ? 'bg-foreground text-background'
+                      : 'bg-background text-foreground hover:bg-muted'
+                    }
+                  `}
+                >
+                  {tabProject?.emoji} {tabProject?.name}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
         {/* Title */}
         <h3 className="font-bold text-xl leading-tight line-clamp-2">
-          {update.title}
+          {displayTitle}
         </h3>
 
         {/* Description */}
         {!isLocked && (
           <p className="text-sm leading-relaxed opacity-80 line-clamp-3 flex-1">
-            {update.description}
+            {displayDescription}
           </p>
         )}
 
-        {/* Footer with project name */}
-        {project && !isLocked && (
+        {/* Footer with project name - show all projects for multi-project days */}
+        {!isLocked && (
           <div className="flex items-center gap-2 pt-2 border-t-2 border-foreground/20">
-            <span className="text-xl">{project.emoji}</span>
-            <span className="text-xs font-bold uppercase tracking-wide opacity-60">
-              {project.name}
-            </span>
+            {hasMultipleProjects && update.projectUpdates ? (
+              <>
+                {update.projectUpdates.map(pu => {
+                  const proj = allProjects.find(p => p.id === pu.projectId);
+                  return proj ? <span key={pu.projectId} className="text-xl">{proj.emoji}</span> : null;
+                })}
+                <span className="text-xs font-bold uppercase tracking-wide opacity-60">
+                  MULTI-PROJECT
+                </span>
+              </>
+            ) : currentProject ? (
+              <>
+                <span className="text-xl">{currentProject.emoji}</span>
+                <span className="text-xs font-bold uppercase tracking-wide opacity-60">
+                  {currentProject.name}
+                </span>
+              </>
+            ) : null}
           </div>
         )}
       </div>

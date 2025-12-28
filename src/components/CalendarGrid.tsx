@@ -122,7 +122,14 @@ export function CalendarGrid({
           const isPastDay = isPast(day);
 
           // Check if this day should be dimmed based on filter
-          const shouldDim = selectedProject && dayUpdates.length > 0 && dayUpdates.every(u => u.projectId !== selectedProject);
+          const shouldDim = selectedProject && dayUpdates.length > 0 && dayUpdates.every(u => {
+            // Check if update has multi-project data
+            if (u.projectUpdates && u.projectUpdates.length > 0) {
+              return !u.projectUpdates.some(pu => pu.projectId === selectedProject);
+            }
+            // Single project check
+            return u.projectId !== selectedProject;
+          });
 
           return (
             <button
@@ -147,10 +154,30 @@ export function CalendarGrid({
                 {day}
               </div>
 
-              {/* Project dots */}
+              {/* Project dots - show multiple for multi-project days */}
               {dayUpdates.length > 0 && (
                 <div className="flex flex-wrap gap-0.5 mt-1 justify-center">
                   {dayUpdates.map((update, idx) => {
+                    // For multi-project days, show all project dots
+                    if (update.projectUpdates && update.projectUpdates.length > 0) {
+                      return update.projectUpdates.map((pu, puIdx) => {
+                        const project = getProject(pu.projectId);
+                        if (!project) return null;
+
+                        const isFiltered = selectedProject && selectedProject !== pu.projectId;
+
+                        return (
+                          <div
+                            key={`${idx}-${puIdx}`}
+                            className={`w-1.5 h-1.5 rounded-full border border-foreground ${isFiltered ? 'opacity-30' : ''}`}
+                            style={{ backgroundColor: project.color }}
+                            aria-label={`${project.name} project`}
+                          />
+                        );
+                      });
+                    }
+
+                    // Single project day
                     const project = getProject(update.projectId);
                     if (!project) return null;
 
