@@ -7,10 +7,20 @@ export interface Project {
   totalDays?: number;
 }
 
+export interface ProjectUpdate {
+  projectId: string;
+  title: string;
+  description: string;
+  highlights: string[];
+  version: string;
+  tags?: string[];
+  timeSpent?: string;
+}
+
 export interface DailyUpdate {
   day: number;
   date: string;
-  projectId: string; // Which project this day belongs to
+  projectId: string; // Primary project (for backwards compatibility)
   title: string;
   description: string;
   highlights: string[];
@@ -20,6 +30,8 @@ export interface DailyUpdate {
   version: string;
   tags?: string[];
   timeSpent?: string; // e.g., "2.5 hours"
+  // For multi-project days
+  projectUpdates?: ProjectUpdate[];
 }
 
 export interface UpdatesData {

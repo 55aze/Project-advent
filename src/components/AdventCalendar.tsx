@@ -34,30 +34,32 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
     return data.projects.find(p => p.id === projectId);
   };
 
-  // Generate days for the current sprint (8 days: Dec 22-31)
+  // Generate days for the current sprint (8 days: Dec 21-28)
   const startDate = new Date(data.startDate);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const sprintDays = 8; // Dec 22-31
+  const sprintDays = 8; // Dec 21-28
 
   const allDays: DailyUpdate[] = Array.from({ length: sprintDays }, (_, i) => {
-    const day = i + 1;
     const currentDate = new Date(startDate);
     currentDate.setDate(startDate.getDate() + i);
     const dateStr = currentDate.toISOString().split('T')[0];
 
-    // Find all updates for this date
-    const existingUpdates = data.updates.filter(u => u.date === dateStr);
-    if (existingUpdates.length > 0) return existingUpdates;
+    // Find existing update for this date
+    const existing = data.updates.find(u => u.date === dateStr);
+    if (existing) return existing;
 
     // Determine status based on current date
     const isPast = currentDate < today;
     const isToday = currentDate.getTime() === today.getTime();
     const status: 'released' | 'upcoming' | 'locked' = isPast || isToday ? 'upcoming' : 'locked';
 
-    // Create a placeholder
-    return [{
+    // Create a placeholder - calculate day number from updates
+    const maxDay = data.updates.reduce((max, u) => Math.max(max, u.day), 0);
+    const day = isPast || isToday ? maxDay + 1 : maxDay + (i - data.updates.length) + 1;
+
+    return {
       day,
       date: dateStr,
       projectId: '',
@@ -67,8 +69,8 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
       version: `v0.${day}.0`,
       status,
       tags: []
-    }];
-  }).flat();
+    };
+  });
 
   const stats = {
     released: data.updates.filter(u => u.status === 'released').length,
@@ -204,11 +206,12 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
               {allDays.map((update, index) => (
                 <AdventCard
-                  key={`${update.day}-${update.projectId}-${index}`}
+                  key={`${update.day}-${update.date}-${index}`}
                   update={update}
                   project={getProject(update.projectId)}
                   onClick={() => handleCardClick(update)}
                   selectedProjectFilter={selectedProjectFilter}
+                  allProjects={data.projects}
                 />
               ))}
             </div>
@@ -222,6 +225,7 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
         project={selectedUpdate ? getProject(selectedUpdate.projectId) : undefined}
         open={modalOpen}
         onClose={handleCloseModal}
+        allProjects={data.projects}
       />
 
       {/* Footer */}

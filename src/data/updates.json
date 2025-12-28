@@ -63,18 +63,17 @@
       "tags": ["ui-redesign", "dates", "documentation", "polish"]
     },
     {
-      "day": 4,
+      "day": 3,
       "date": "2025-12-24",
       "projectId": "mind-galaxy",
       "title": "Mind Galaxy - Initial Setup",
-      "description": "Started a new AI-powered note-catching app to help capture and organize fleeting thoughts. Built with React, TypeScript, and Vite, integrated with Google Gemini API for intelligent thought organization. Designed to help users quickly sort their minds, unload mental burdens, and identify connections between ideas.",
+      "description": "Started a new AI-powered note-catching app to help capture and organize fleeting thoughts. Built with React, TypeScript, and Vite, integrated with Google Gemini API for intelligent thought organization.",
       "highlights": [
         "React + TypeScript + Vite foundation",
         "Google Gemini API integration for AI-powered organization",
         "Project structure with components and services",
         "Environment configuration for API keys",
-        "Initial repository setup and documentation",
-        "5 commits establishing core architecture"
+        "Initial repository setup and documentation"
       ],
       "version": "v0.1.0",
       "status": "released",
@@ -82,41 +81,82 @@
       "timeSpent": "3 hours"
     },
     {
-      "day": 5,
+      "day": 4,
       "date": "2025-12-25",
       "projectId": "build-tracker",
-      "title": "View Switcher & UX Polish",
-      "description": "Added calendar/cards view toggle and moved project filters to always-visible pills for easier navigation. Compact calendar design makes it easy to scan release dates at a glance, while the new monthly goal tracker (3/8 DEC GOAL) helps maintain sprint focus.",
-      "highlights": [
-        "Calendar/Cards view switcher with icon-only mobile design",
-        "Project filters as visible pills (ALL, BUILD TRACKER, MIND GALAXY)",
-        "Compact calendar - reduced sizing for better scanning",
-        "Monthly goal tracker badge (X/8 DEC GOAL)",
-        "Future cards hide dates until release",
-        "Only released items show actual dates",
-        "Improved mobile touch interactions"
-      ],
-      "version": "v0.3.0",
+      "title": "Day 4: Multi-Project Updates",
+      "description": "Shipped updates for both Build Tracker and Mind Galaxy projects.",
+      "highlights": [],
+      "version": "v0.4.0",
       "status": "released",
-      "tags": ["ux", "navigation", "mobile", "goal-tracking"]
+      "tags": ["multi-project"],
+      "projectUpdates": [
+        {
+          "projectId": "build-tracker",
+          "title": "View Switcher & UX Polish",
+          "description": "Added calendar/cards view toggle and project filter pills for easier navigation. Compact calendar design with monthly goal tracker.",
+          "highlights": [
+            "Calendar/Cards view switcher",
+            "Always-visible project filter pills",
+            "Compact calendar design",
+            "Monthly goal tracker badge"
+          ],
+          "version": "v0.3.0",
+          "tags": ["ux", "navigation", "mobile"]
+        },
+        {
+          "projectId": "mind-galaxy",
+          "title": "Visual Clustering & Node Design",
+          "description": "Enhanced thought visualization with improved cluster logic and minimal dot design for cleaner interface.",
+          "highlights": [
+            "Tightened initial layout for better clustering",
+            "Minimal dot design for cleaner interface",
+            "Hover text for node details",
+            "Top 3 connection highlighting"
+          ],
+          "version": "v0.2.0",
+          "tags": ["visualization", "clustering", "ux"]
+        }
+      ]
     },
     {
       "day": 5,
-      "date": "2025-12-25",
-      "projectId": "mind-galaxy",
-      "title": "Visual Clustering & Node Design",
-      "description": "Enhanced thought visualization with improved cluster logic for stronger visual grouping of related nodes. Updated node design to minimal dots with hover text and top 3 connection highlighting, creating clearer relationship hierarchies.",
-      "highlights": [
-        "Tightened initial layout for better clustering",
-        "Leveraged existing physics parameters for stronger visual grouping",
-        "Minimal dot design for cleaner interface",
-        "Hover text for node details",
-        "Top 3 connection highlighting for relationship hierarchy",
-        "Clearer visualization of related thoughts"
-      ],
-      "version": "v0.2.0",
+      "date": "2025-12-27",
+      "projectId": "build-tracker",
+      "title": "Day 5: Multi-Project Updates",
+      "description": "Refined both Build Tracker structure and Mind Galaxy clustering features.",
+      "highlights": [],
+      "version": "v0.5.0",
       "status": "released",
-      "tags": ["visualization", "clustering", "ux", "design"]
+      "tags": ["multi-project"],
+      "projectUpdates": [
+        {
+          "projectId": "build-tracker",
+          "title": "Project-Advent Improvements",
+          "description": "Fixed duplicate day numbering and enabled multiple projects per day. Enhanced calendar and cards view with better project filtering and monthly goal tracking.",
+          "highlights": [
+            "Fixed duplicate day numbering issue",
+            "Enabled multiple projects per day support",
+            "Improved calendar view with multiple project dots",
+            "Enhanced cards view with tab switching for multi-project days"
+          ],
+          "version": "v0.4.0",
+          "tags": ["bug-fix", "feature", "multi-project"]
+        },
+        {
+          "projectId": "mind-galaxy",
+          "title": "Cluster Logic Refinements",
+          "description": "Refined cluster logic for better visual grouping and added cluster zoom effect for improved navigation.",
+          "highlights": [
+            "Refined cluster logic for stronger visual grouping",
+            "Created cluster zoom effect for better navigation",
+            "Improved cluster boundary detection",
+            "Enhanced user interaction with clustered nodes"
+          ],
+          "version": "v0.3.0",
+          "tags": ["clustering", "ux", "visualization"]
+        }
+      ]
     }
   ]
 }

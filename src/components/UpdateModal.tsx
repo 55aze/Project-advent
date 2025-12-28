@@ -14,19 +14,59 @@ interface UpdateModalProps {
   project: Project | undefined;
   open: boolean;
   onClose: () => void;
+  allProjects: Project[];
 }
 
-export function UpdateModal({ update, project, open, onClose }: UpdateModalProps) {
+export function UpdateModal({ update, project, open, onClose, allProjects }: UpdateModalProps) {
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
 
   if (!update) return null;
 
+  const hasMultipleProjects = update.projectUpdates && update.projectUpdates.length > 0;
+
+  // Get current content based on active tab
+  const currentContent = hasMultipleProjects && update.projectUpdates
+    ? update.projectUpdates[activeTab]
+    : null;
+
+  const currentProject = currentContent
+    ? allProjects.find(p => p.id === currentContent.projectId)
+    : project;
+
+  const displayTitle = currentContent ? currentContent.title : update.title;
+  const displayDescription = currentContent ? currentContent.description : update.description;
+  const displayHighlights = currentContent ? currentContent.highlights : update.highlights;
+  const displayVersion = currentContent ? currentContent.version : update.version;
+  const displayTags = currentContent ? currentContent.tags : update.tags;
+
   const generateTwitterUpdate = () => {
-    const text = `🎯 DAY ${update.day}: ${update.title}
+    if (hasMultipleProjects && update.projectUpdates) {
+      // Generate combined tweet for all projects
+      const projectLines = update.projectUpdates.map(pu => {
+        const proj = allProjects.find(p => p.id === pu.projectId);
+        return `${proj?.emoji} ${proj?.name}: ${pu.title}`;
+      }).join('\n');
 
-${update.highlights.slice(0, 3).map(h => `→ ${h}`).join('\n')}
+      const allHighlights = update.projectUpdates.flatMap(pu => pu.highlights.slice(0, 2));
+      const highlightLines = allHighlights.slice(0, 4).map(h => `→ ${h}`).join('\n');
 
-${project ? project.emoji + ' ' + project.name : ''} | ${update.version}
+      const text = `🎯 DAY ${update.day}: Multi-Project Update
+
+${projectLines}
+
+${highlightLines}
+
+#BuildInPublic #25DaysOfShipping`;
+      return text;
+    }
+
+    // Single project tweet
+    const text = `🎯 DAY ${update.day}: ${displayTitle}
+
+${displayHighlights.slice(0, 3).map(h => `→ ${h}`).join('\n')}
+
+${currentProject ? currentProject.emoji + ' ' + currentProject.name : ''} | ${displayVersion}
 ${update.timeSpent ? `⏱️ ${update.timeSpent}` : ''}
 
 #BuildInPublic #25DaysOfShipping`;
@@ -58,28 +98,29 @@ ${update.timeSpent ? `⏱️ ${update.timeSpent}` : ''}
 
         <DialogHeader>
           <div className="flex items-start gap-4 mb-4">
-            {project && (
+            {currentProject && (
               <div
                 className="text-5xl border-4 border-foreground p-4 pixel-border"
-                style={{ backgroundColor: project.color }}
+                style={{ backgroundColor: currentProject.color }}
               >
-                {project.emoji}
+                {currentProject.emoji}
               </div>
             )}
             <div className="flex-1">
               <div className="text-sm font-mono mb-2 uppercase text-muted-foreground">
                 Day {update.day} • {update.date}
+                {hasMultipleProjects && ' • MULTI-PROJECT'}
               </div>
-              <DialogTitle className="text-2xl mb-2">{update.title}</DialogTitle>
-              {project && (
-                <div className="text-sm font-bold" style={{ color: project.color }}>
-                  {project.name.toUpperCase()}
+              <DialogTitle className="text-2xl mb-2">{displayTitle}</DialogTitle>
+              {currentProject && (
+                <div className="text-sm font-bold" style={{ color: currentProject.color }}>
+                  {currentProject.name.toUpperCase()}
                 </div>
               )}
             </div>
             <div className="flex flex-col gap-2">
               <div className="border-2 border-foreground px-3 py-1 bg-background font-mono font-bold text-sm">
-                {update.version}
+                {displayVersion}
               </div>
               {update.timeSpent && (
                 <div className="border-2 border-foreground px-3 py-1 bg-background font-mono text-xs flex items-center gap-1">
@@ -92,12 +133,36 @@ ${update.timeSpent ? `⏱️ ${update.timeSpent}` : ''}
         </DialogHeader>
 
         <div className="space-y-6 mt-4">
+          {/* Multi-project tabs */}
+          {hasMultipleProjects && update.projectUpdates && (
+            <div className="flex gap-2 border-4 border-foreground overflow-hidden">
+              {update.projectUpdates.map((pu, index) => {
+                const tabProject = allProjects.find(p => p.id === pu.projectId);
+                return (
+                  <button
+                    key={pu.projectId}
+                    onClick={() => setActiveTab(index)}
+                    className={`
+                      flex-1 px-4 py-3 text-sm font-bold uppercase transition-colors
+                      ${activeTab === index
+                        ? 'bg-foreground text-background'
+                        : 'bg-background text-foreground hover:bg-muted'
+                      }
+                    `}
+                  >
+                    {tabProject?.emoji} {tabProject?.name}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
           {/* GIF/Image */}
           {(update.gifUrl || update.imageUrl) && (
             <div className="border-4 border-foreground pixel-border">
               <img
                 src={update.gifUrl || update.imageUrl}
-                alt={update.title}
+                alt={displayTitle}
                 className="w-full h-auto"
               />
             </div>
@@ -107,16 +172,16 @@ ${update.timeSpent ? `⏱️ ${update.timeSpent}` : ''}
           <div className="border-4 border-foreground p-4 bg-muted/30">
             <h3 className="font-bold text-sm mb-3 uppercase">DESCRIPTION</h3>
             <p className="text-sm leading-relaxed font-mono">
-              {update.description}
+              {displayDescription}
             </p>
           </div>
 
           {/* Highlights */}
-          {update.highlights.length > 0 && (
+          {displayHighlights.length > 0 && (
             <div className="border-4 border-foreground p-4">
               <h3 className="font-bold text-sm mb-3 uppercase">WHAT I BUILT</h3>
               <ul className="space-y-2">
-                {update.highlights.map((highlight, index) => (
+                {displayHighlights.map((highlight, index) => (
                   <li
                     key={index}
                     className="flex items-start gap-3 text-sm font-mono border-l-4 border-foreground pl-3 py-1"
@@ -130,9 +195,9 @@ ${update.timeSpent ? `⏱️ ${update.timeSpent}` : ''}
           )}
 
           {/* Tags */}
-          {update.tags && update.tags.length > 0 && (
+          {displayTags && displayTags.length > 0 && (
             <div className="flex flex-wrap gap-2">
-              {update.tags.map((tag) => (
+              {displayTags.map((tag) => (
                 <span
                   key={tag}
                   className="px-3 py-1 border-2 border-foreground text-xs font-mono font-bold uppercase"
