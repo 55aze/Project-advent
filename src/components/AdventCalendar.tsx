@@ -103,25 +103,9 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
                 {data.title.toUpperCase()}
               </h1>
-              <p className="text-sm md:text-base font-mono opacity-80 max-w-2xl mb-6">
+              <p className="text-sm md:text-base font-mono opacity-80 max-w-2xl">
                 {data.description}
               </p>
-
-              {/* Stats - horizontal badges */}
-              <div className="flex flex-wrap gap-3 text-xs font-mono font-bold">
-                <div className="flex items-center gap-2 px-4 py-2 bg-green-500 border-2 border-background">
-                  <span className="text-2xl">{stats.released}</span>
-                  <span>SHIPPED</span>
-                </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-purple-500 border-2 border-background">
-                  <span className="text-2xl">{stats.released}/{sprintGoal}</span>
-                  <span>DEC GOAL</span>
-                </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-blue-500 border-2 border-background">
-                  <span className="text-2xl">{stats.upcoming}</span>
-                  <span>IN PROGRESS</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -129,72 +113,93 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
 
       {/* Main content */}
       <div className="container mx-auto px-4 py-6">
-        {/* View Switcher & Project Filters - Mobile optimized */}
-        <div className="mb-6 space-y-4">
-          {/* View Toggle */}
-          <div className="flex border-4 border-foreground pixel-border overflow-hidden w-fit">
-            <button
-              onClick={() => setViewMode('calendar')}
-              className={`
-                flex items-center gap-2 px-4 py-3 font-bold uppercase text-sm transition-colors
-                ${viewMode === 'calendar'
-                  ? 'bg-foreground text-background'
-                  : 'bg-background text-foreground hover:bg-muted'
-                }
-              `}
-            >
-              <Calendar className="w-4 h-4" strokeWidth={3} />
-              <span className="hidden sm:inline">Calendar</span>
-            </button>
-            <div className="w-1 bg-foreground" />
-            <button
-              onClick={() => setViewMode('cards')}
-              className={`
-                flex items-center gap-2 px-4 py-3 font-bold uppercase text-sm transition-colors
-                ${viewMode === 'cards'
-                  ? 'bg-foreground text-background'
-                  : 'bg-background text-foreground hover:bg-muted'
-                }
-              `}
-            >
-              <LayoutGrid className="w-4 h-4" strokeWidth={3} />
-              <span className="hidden sm:inline">Cards</span>
-            </button>
-          </div>
-
-          {/* Project Filter Pills */}
-          {data.projects.length > 1 && (
-            <div className="flex flex-wrap gap-2">
+        {/* View Switcher, Project Filters & Progress - All in one row */}
+        <div className="mb-6 flex flex-wrap items-center gap-3 justify-between">
+          {/* Left side: View Toggle + Project Filters */}
+          <div className="flex flex-wrap items-center gap-3">
+            {/* View Toggle */}
+            <div className="flex border-4 border-foreground pixel-border overflow-hidden h-[44px]">
               <button
-                onClick={() => setSelectedProjectFilter(null)}
+                onClick={() => setViewMode('calendar')}
                 className={`
-                  px-4 py-2 border-2 border-foreground font-bold uppercase text-xs pixel-border-sm transition-colors
-                  ${!selectedProjectFilter
+                  flex items-center gap-2 px-4 font-bold uppercase text-sm transition-colors
+                  ${viewMode === 'calendar'
                     ? 'bg-foreground text-background'
                     : 'bg-background text-foreground hover:bg-muted'
                   }
                 `}
               >
-                ALL PROJECTS
+                <Calendar className="w-4 h-4" strokeWidth={3} />
+                <span className="hidden sm:inline">Calendar</span>
               </button>
-              {data.projects.map((project) => (
+              <div className="w-1 bg-foreground" />
+              <button
+                onClick={() => setViewMode('cards')}
+                className={`
+                  flex items-center gap-2 px-4 font-bold uppercase text-sm transition-colors
+                  ${viewMode === 'cards'
+                    ? 'bg-foreground text-background'
+                    : 'bg-background text-foreground hover:bg-muted'
+                  }
+                `}
+              >
+                <LayoutGrid className="w-4 h-4" strokeWidth={3} />
+                <span className="hidden sm:inline">Cards</span>
+              </button>
+            </div>
+
+            {/* Project Filter Pills */}
+            {data.projects.length > 1 && (
+              <>
                 <button
-                  key={project.id}
-                  onClick={() => setSelectedProjectFilter(project.id)}
+                  onClick={() => setSelectedProjectFilter(null)}
                   className={`
-                    px-4 py-2 border-2 border-foreground font-bold uppercase text-xs pixel-border-sm transition-colors flex items-center gap-2
-                    ${selectedProjectFilter === project.id
+                    px-4 h-[44px] border-4 border-foreground font-bold uppercase text-xs pixel-border transition-colors
+                    ${!selectedProjectFilter
                       ? 'bg-foreground text-background'
                       : 'bg-background text-foreground hover:bg-muted'
                     }
                   `}
                 >
-                  <span>{project.emoji}</span>
-                  <span>{project.name}</span>
+                  ALL PROJECTS
                 </button>
-              ))}
+                {data.projects.map((project) => (
+                  <button
+                    key={project.id}
+                    onClick={() => setSelectedProjectFilter(project.id)}
+                    className={`
+                      px-4 h-[44px] border-4 border-foreground font-bold uppercase text-xs pixel-border transition-colors flex items-center gap-2
+                      ${selectedProjectFilter === project.id
+                        ? 'bg-foreground text-background'
+                        : 'bg-background text-foreground hover:bg-muted'
+                      }
+                    `}
+                  >
+                    <span>{project.emoji}</span>
+                    <span className="hidden sm:inline">{project.name}</span>
+                  </button>
+                ))}
+              </>
+            )}
+          </div>
+
+          {/* Right side: Progress Bar */}
+          <div className="flex items-center gap-3 border-4 border-foreground pixel-border px-4 h-[44px] bg-background min-w-[240px]">
+            <div className="flex-1">
+              <div className="text-xs font-bold font-mono mb-1 uppercase">
+                {stats.released}/{sprintGoal} Released
+              </div>
+              <div className="w-full h-2 border-2 border-foreground bg-muted">
+                <div
+                  className="h-full bg-green-500 transition-all duration-500"
+                  style={{ width: `${(stats.released / sprintGoal) * 100}%` }}
+                />
+              </div>
             </div>
-          )}
+            <div className="text-2xl font-bold font-mono">
+              {Math.round((stats.released / sprintGoal) * 100)}%
+            </div>
+          </div>
         </div>
 
         {/* Calendar View - Full Width */}
