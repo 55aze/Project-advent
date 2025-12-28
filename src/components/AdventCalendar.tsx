@@ -34,48 +34,62 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
     return data.projects.find(p => p.id === projectId);
   };
 
-  // Generate days for the current sprint (8 days: Dec 21-28)
-  const startDate = new Date(data.startDate);
+  // Get all days from updates, sorted by day number
+  const releasedDays = [...data.updates].sort((a, b) => a.day - b.day);
+
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const sprintDays = 8; // Dec 21-28
+  // Find the next unreleased day number
+  const maxDay = releasedDays.length > 0
+    ? Math.max(...releasedDays.map(u => u.day))
+    : 0;
 
-  const allDays: DailyUpdate[] = Array.from({ length: sprintDays }, (_, i) => {
-    const currentDate = new Date(startDate);
-    currentDate.setDate(startDate.getDate() + i);
-    const dateStr = currentDate.toISOString().split('T')[0];
+  const nextDayNumber = maxDay + 1;
+  const sprintGoal = 8; // Total days goal for December
 
-    // Find existing update for this date
-    const existing = data.updates.find(u => u.date === dateStr);
-    if (existing) return existing;
+  // Create WIP card for next day (if within sprint goal)
+  const wipCard: DailyUpdate | null = nextDayNumber <= sprintGoal ? {
+    day: nextDayNumber,
+    date: today.toISOString().split('T')[0],
+    projectId: '',
+    title: `Day ${nextDayNumber}`,
+    description: 'Coming soon...',
+    highlights: [],
+    version: `v0.${nextDayNumber}.0`,
+    status: 'upcoming' as const,
+    tags: []
+  } : null;
 
-    // Determine status based on current date
-    const isPast = currentDate < today;
-    const isToday = currentDate.getTime() === today.getTime();
-    const status: 'released' | 'upcoming' | 'locked' = isPast || isToday ? 'upcoming' : 'locked';
+  // Create locked cards for remaining days
+  const lockedCards: DailyUpdate[] = [];
+  if (wipCard) {
+    for (let i = nextDayNumber + 1; i <= sprintGoal; i++) {
+      lockedCards.push({
+        day: i,
+        date: '', // No date yet
+        projectId: '',
+        title: `Day ${i}`,
+        description: 'Coming soon...',
+        highlights: [],
+        version: `v0.${i}.0`,
+        status: 'locked' as const,
+        tags: []
+      });
+    }
+  }
 
-    // Create a placeholder - calculate day number from updates
-    const maxDay = data.updates.reduce((max, u) => Math.max(max, u.day), 0);
-    const day = isPast || isToday ? maxDay + 1 : maxDay + (i - data.updates.length) + 1;
-
-    return {
-      day,
-      date: dateStr,
-      projectId: '',
-      title: `Day ${day}`,
-      description: 'Coming soon...',
-      highlights: [],
-      version: `v0.${day}.0`,
-      status,
-      tags: []
-    };
-  });
+  // Combine: released + WIP + locked, sorted by day number
+  const allDays: DailyUpdate[] = [
+    ...releasedDays,
+    ...(wipCard ? [wipCard] : []),
+    ...lockedCards
+  ].sort((a, b) => a.day - b.day);
 
   const stats = {
-    released: data.updates.filter(u => u.status === 'released').length,
-    upcoming: data.updates.filter(u => u.status === 'upcoming').length,
-    locked: sprintDays - data.updates.length,
+    released: releasedDays.filter(u => u.status === 'released').length,
+    upcoming: wipCard ? 1 : 0,
+    locked: lockedCards.length,
   };
 
   return (
@@ -100,7 +114,7 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
                   <span>SHIPPED</span>
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2 bg-purple-500 border-2 border-background">
-                  <span className="text-2xl">{stats.released}/{sprintDays}</span>
+                  <span className="text-2xl">{stats.released}/{sprintGoal}</span>
                   <span>DEC GOAL</span>
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2 bg-blue-500 border-2 border-background">
