@@ -94,6 +94,29 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
     }
   }
 
+  // For past cycles, show locked placeholders for next month's cycle
+  if (!isCurrentCycle) {
+    const nextCycleIndex = data.cycles.findIndex(c => c.id === selectedCycleId) + 1;
+    if (nextCycleIndex < data.cycles.length) {
+      const nextCycle = data.cycles[nextCycleIndex];
+      // Add a few placeholder cards to show what's coming
+      for (let i = 1; i <= Math.min(3, nextCycle.goal); i++) {
+        lockedCards.push({
+          day: i,
+          date: '',
+          cycleId: nextCycle.id,
+          projectId: '',
+          title: `${nextCycle.name} - Day ${i}`,
+          description: 'Next cycle preview...',
+          highlights: [],
+          version: `v${nextCycle.id}-${i}`,
+          status: 'locked' as const,
+          tags: []
+        });
+      }
+    }
+  }
+
   // Combine: released + WIP + locked, sorted by day number
   const allDays: DailyUpdate[] = [
     ...releasedDays,
@@ -122,141 +145,138 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
 
   return (
     <div className="min-h-screen bg-background pixel-grid">
-      {/* Header - Redesigned for impact */}
+      {/* Header - Compact with general stats */}
       <header className="border-b-4 border-foreground bg-foreground text-background">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1">
-              {/* Main title - bigger and bolder */}
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
-                {data.title.toUpperCase()}
-              </h1>
-              <p className="text-sm md:text-base font-mono opacity-80 max-w-2xl">
-                {data.description}
-              </p>
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between gap-4">
+            {/* Title */}
+            <h1 className="text-2xl md:text-3xl font-bold uppercase">
+              {data.title}
+            </h1>
+
+            {/* General Stats */}
+            <div className="flex items-center gap-4 text-xs font-mono font-bold">
+              <div className="text-right">
+                <div className="text-xl">{data.cycles.length}</div>
+                <div className="opacity-70">CYCLES</div>
+              </div>
+              <div className="text-2xl opacity-50">•</div>
+              <div className="text-right">
+                <div className="text-xl">{totalStats.releases}/{totalStats.days}</div>
+                <div className="opacity-70">RELEASES / DAYS</div>
+              </div>
             </div>
           </div>
         </div>
       </header>
 
       {/* Main content */}
-      <div className="container mx-auto px-4 py-6">
-        {/* View Switcher, Project Filters & Progress - All in one row */}
-        <div className="mb-6 flex flex-wrap items-center gap-3 justify-between">
-          {/* Left side: View Toggle + Cycle Selector + Project Filters */}
-          <div className="flex flex-wrap items-center gap-3">
-            {/* View Toggle */}
-            <div className="flex border-4 border-foreground pixel-border overflow-hidden h-[44px]">
-              <button
-                onClick={() => setViewMode('calendar')}
-                className={`
-                  flex items-center gap-2 px-4 font-bold uppercase text-sm transition-colors
-                  ${viewMode === 'calendar'
-                    ? 'bg-foreground text-background'
-                    : 'bg-background text-foreground hover:bg-muted'
-                  }
-                `}
-              >
-                <Calendar className="w-4 h-4" strokeWidth={3} />
-                <span className="hidden sm:inline">Calendar</span>
-              </button>
-              <div className="w-1 bg-foreground" />
-              <button
-                onClick={() => setViewMode('cards')}
-                className={`
-                  flex items-center gap-2 px-4 font-bold uppercase text-sm transition-colors
-                  ${viewMode === 'cards'
-                    ? 'bg-foreground text-background'
-                    : 'bg-background text-foreground hover:bg-muted'
-                  }
-                `}
-              >
-                <LayoutGrid className="w-4 h-4" strokeWidth={3} />
-                <span className="hidden sm:inline">Cards</span>
-              </button>
-            </div>
-
-            {/* Cycle Selector Dropdown */}
-            <div className="relative">
-              <select
-                value={selectedCycleId}
-                onChange={(e) => setSelectedCycleId(e.target.value)}
-                className="h-[44px] px-4 pr-10 border-4 border-foreground pixel-border bg-background font-bold uppercase text-xs appearance-none cursor-pointer hover:bg-muted transition-colors"
-              >
-                {data.cycles.map((cycle) => (
-                  <option key={cycle.id} value={cycle.id}>
-                    {cycle.name}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" strokeWidth={3} />
-            </div>
-
-            {/* Project Filter Pills */}
-            {data.projects.length > 1 && (
-              <>
+      <div className="container mx-auto px-4 py-4">
+        {/* Sticky Toolbar */}
+        <div className="sticky top-0 bg-background z-10 -mx-4 px-4 py-3 border-b-2 border-foreground mb-4">
+          <div className="flex flex-wrap items-center gap-3 justify-between">
+            {/* Left side: View Toggle + Project Filters */}
+            <div className="flex flex-wrap items-center gap-3">
+              {/* View Toggle */}
+              <div className="flex border-4 border-foreground pixel-border overflow-hidden h-[44px]">
                 <button
-                  onClick={() => setSelectedProjectFilter(null)}
+                  onClick={() => setViewMode('calendar')}
                   className={`
-                    px-4 h-[44px] border-4 border-foreground font-bold uppercase text-xs pixel-border transition-colors
-                    ${!selectedProjectFilter
+                    flex items-center gap-2 px-4 font-bold uppercase text-sm transition-colors
+                    ${viewMode === 'calendar'
                       ? 'bg-foreground text-background'
                       : 'bg-background text-foreground hover:bg-muted'
                     }
                   `}
                 >
-                  ALL PROJECTS
+                  <Calendar className="w-4 h-4" strokeWidth={3} />
+                  <span className="hidden sm:inline">Calendar</span>
                 </button>
-                {data.projects.map((project) => (
+                <div className="w-1 bg-foreground" />
+                <button
+                  onClick={() => setViewMode('cards')}
+                  className={`
+                    flex items-center gap-2 px-4 font-bold uppercase text-sm transition-colors
+                    ${viewMode === 'cards'
+                      ? 'bg-foreground text-background'
+                      : 'bg-background text-foreground hover:bg-muted'
+                    }
+                  `}
+                >
+                  <LayoutGrid className="w-4 h-4" strokeWidth={3} />
+                  <span className="hidden sm:inline">Cards</span>
+                </button>
+              </div>
+
+              {/* Project Filter Pills */}
+              {data.projects.length > 1 && (
+                <>
                   <button
-                    key={project.id}
-                    onClick={() => setSelectedProjectFilter(project.id)}
+                    onClick={() => setSelectedProjectFilter(null)}
                     className={`
-                      px-4 h-[44px] border-4 border-foreground font-bold uppercase text-xs pixel-border transition-colors flex items-center gap-2
-                      ${selectedProjectFilter === project.id
+                      px-4 h-[44px] border-4 border-foreground font-bold uppercase text-xs pixel-border transition-colors
+                      ${!selectedProjectFilter
                         ? 'bg-foreground text-background'
                         : 'bg-background text-foreground hover:bg-muted'
                       }
                     `}
                   >
-                    <span>{project.emoji}</span>
-                    <span className="hidden sm:inline">{project.name}</span>
+                    ALL PROJECTS
                   </button>
-                ))}
-              </>
-            )}
-          </div>
-
-          {/* Right side: Dual Progress Indicators */}
-          <div className="flex items-center gap-3">
-            {/* Current Cycle Progress */}
-            <div className="flex items-center gap-3 border-4 border-foreground pixel-border px-4 h-[44px] bg-background min-w-[240px]">
-              <div className="flex-1">
-                <div className="text-xs font-bold font-mono mb-1 uppercase">
-                  {cycleStats.released}/{cycleStats.goal} Released
-                </div>
-                <div className="w-full h-2 border-2 border-foreground bg-muted">
-                  <div
-                    className="h-full bg-green-500 transition-all duration-500"
-                    style={{ width: `${(cycleStats.released / cycleStats.goal) * 100}%` }}
-                  />
-                </div>
-              </div>
-              <div className="text-2xl font-bold font-mono">
-                {Math.round((cycleStats.released / cycleStats.goal) * 100)}%
-              </div>
+                  {data.projects.map((project) => (
+                    <button
+                      key={project.id}
+                      onClick={() => setSelectedProjectFilter(project.id)}
+                      className={`
+                        px-4 h-[44px] border-4 border-foreground font-bold uppercase text-xs pixel-border transition-colors flex items-center gap-2
+                        ${selectedProjectFilter === project.id
+                          ? 'bg-foreground text-background'
+                          : 'bg-background text-foreground hover:bg-muted'
+                        }
+                      `}
+                    >
+                      <span>{project.emoji}</span>
+                      <span className="hidden sm:inline">{project.name}</span>
+                    </button>
+                  ))}
+                </>
+              )}
             </div>
 
-            {/* Total Stats */}
-            <div className="flex items-center gap-2 border-4 border-foreground pixel-border px-4 h-[44px] bg-purple-500 text-background">
-              <div className="font-mono font-bold text-xs uppercase">
-                <div className="text-2xl">{totalStats.releases}</div>
-                <div className="text-[10px] opacity-80">TOTAL</div>
+            {/* Right side: Cycle Selector + Progress */}
+            <div className="flex items-center gap-3">
+              {/* Cycle Selector Dropdown */}
+              <div className="relative">
+                <select
+                  value={selectedCycleId}
+                  onChange={(e) => setSelectedCycleId(e.target.value)}
+                  className="h-[44px] px-4 pr-10 border-4 border-foreground pixel-border bg-background font-bold uppercase text-xs appearance-none cursor-pointer hover:bg-muted transition-colors"
+                >
+                  {data.cycles.map((cycle) => (
+                    <option key={cycle.id} value={cycle.id}>
+                      {cycle.name}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" strokeWidth={3} />
               </div>
-              <div className="text-2xl font-bold">/</div>
-              <div className="font-mono font-bold text-xs uppercase">
-                <div className="text-2xl">{totalStats.days}</div>
-                <div className="text-[10px] opacity-80">DAYS</div>
+
+              {/* Current Cycle Progress - No Box */}
+              <div className="flex items-center gap-3 h-[44px]">
+                <div className="flex flex-col justify-center min-w-[180px]">
+                  <div className="text-xs font-bold font-mono mb-1 uppercase">
+                    {cycleStats.released}/{cycleStats.goal} Released
+                  </div>
+                  <div className="w-full h-2 border-2 border-foreground bg-muted">
+                    <div
+                      className="h-full bg-green-500 transition-all duration-500"
+                      style={{ width: `${(cycleStats.released / cycleStats.goal) * 100}%` }}
+                    />
+                  </div>
+                </div>
+                <div className="text-2xl font-bold font-mono">
+                  {Math.round((cycleStats.released / cycleStats.goal) * 100)}%
+                </div>
               </div>
             </div>
           </div>
