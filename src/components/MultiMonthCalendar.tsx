@@ -20,8 +20,11 @@ export function MultiMonthCalendar({
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  // Generate months to display: all past cycles + current + 1 ahead
+  // Generate months to display: up to current month + 1 ahead (N+1)
   const displayMonths: { year: number; month: number; cycleName: string }[] = [];
+
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
 
   cycles.forEach(cycle => {
     const startDate = new Date(cycle.startDate);
@@ -30,7 +33,10 @@ export function MultiMonthCalendar({
     let currentDate = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
     const lastDate = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
 
-    while (currentDate <= lastDate) {
+    // Limit: up to current month + 1
+    const maxDate = new Date(currentYear, currentMonth + 1, 1);
+
+    while (currentDate <= lastDate && currentDate <= maxDate) {
       displayMonths.push({
         year: currentDate.getFullYear(),
         month: currentDate.getMonth(),
@@ -38,15 +44,6 @@ export function MultiMonthCalendar({
       });
       currentDate.setMonth(currentDate.getMonth() + 1);
     }
-  });
-
-  // Add one month ahead
-  const lastMonth = displayMonths[displayMonths.length - 1];
-  const nextMonth = new Date(lastMonth.year, lastMonth.month + 1, 1);
-  displayMonths.push({
-    year: nextMonth.getFullYear(),
-    month: nextMonth.getMonth(),
-    cycleName: 'Future'
   });
 
   const getDayUpdates = (year: number, month: number, day: number) => {
@@ -65,7 +62,7 @@ export function MultiMonthCalendar({
   };
 
   return (
-    <div className="space-y-6 max-h-[600px] overflow-y-auto border-4 border-foreground pixel-border p-4">
+    <div className="space-y-4 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
       {displayMonths.map(({ year, month, cycleName }) => {
         const firstDay = new Date(year, month, 1);
         const lastDay = new Date(year, month + 1, 0);
@@ -114,7 +111,7 @@ export function MultiMonthCalendar({
                   return (
                     <div
                       key={`empty-${index}`}
-                      className="aspect-square border-r border-b border-foreground/20 last:border-r-0 bg-muted/30 min-h-[40px]"
+                      className="aspect-square border-r border-b border-foreground/20 last:border-r-0 bg-muted/30 min-h-[28px]"
                     />
                   );
                 }
@@ -141,8 +138,8 @@ export function MultiMonthCalendar({
                     }}
                     className={`
                       aspect-square border-r border-b border-foreground/20 last:border-r-0
-                      p-1 hover:bg-muted/50 active:bg-muted transition-colors relative
-                      touch-manipulation min-h-[40px]
+                      p-0.5 hover:bg-muted/50 active:bg-muted transition-colors relative
+                      touch-manipulation min-h-[28px]
                       ${isCurrentDay ? 'bg-yellow-100 ring-2 ring-yellow-500 ring-inset' : ''}
                       ${!isPastDay && !isCurrentDay ? 'bg-gray-50 opacity-60' : ''}
                       ${dayUpdates.length > 0 ? 'cursor-pointer' : 'cursor-default'}
