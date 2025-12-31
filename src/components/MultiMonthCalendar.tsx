@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react';
 import type { DailyUpdate, Project, Cycle } from '../types/update';
 
 interface MultiMonthCalendarProps {
@@ -5,6 +6,7 @@ interface MultiMonthCalendarProps {
   updates: DailyUpdate[];
   projects: Project[];
   selectedProject: string | null;
+  selectedCycleId: string;
   onDateClick: (update: DailyUpdate) => void;
 }
 
@@ -13,15 +15,17 @@ export function MultiMonthCalendar({
   updates,
   projects,
   selectedProject,
+  selectedCycleId,
   onDateClick
 }: MultiMonthCalendarProps) {
+  const monthRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const getProject = (projectId: string) => projects.find(p => p.id === projectId);
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   // Generate months to display: up to current month + 1 ahead (N+1)
-  const displayMonths: { year: number; month: number; cycleName: string }[] = [];
+  const displayMonths: { year: number; month: number; cycleName: string; cycleId: string }[] = [];
 
   const currentMonth = today.getMonth();
   const currentYear = today.getFullYear();
@@ -40,11 +44,24 @@ export function MultiMonthCalendar({
       displayMonths.push({
         year: currentDate.getFullYear(),
         month: currentDate.getMonth(),
-        cycleName: cycle.name
+        cycleName: cycle.name,
+        cycleId: cycle.id
       });
       currentDate.setMonth(currentDate.getMonth() + 1);
     }
   });
+
+  // Auto-scroll to selected cycle's first month when cycle changes
+  useEffect(() => {
+    const firstMonthOfCycle = displayMonths.find(m => m.cycleId === selectedCycleId);
+    if (firstMonthOfCycle) {
+      const monthKey = `${firstMonthOfCycle.year}-${firstMonthOfCycle.month}`;
+      const monthElement = monthRefs.current.get(monthKey);
+      if (monthElement) {
+        monthElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }, [selectedCycleId, displayMonths]);
 
   const getDayUpdates = (year: number, month: number, day: number) => {
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -85,7 +102,15 @@ export function MultiMonthCalendar({
         }
 
         return (
-          <div key={`${year}-${month}`} className="border-2 border-foreground bg-background">
+          <div
+            key={`${year}-${month}`}
+            ref={(el) => {
+              if (el) {
+                monthRefs.current.set(`${year}-${month}`, el);
+              }
+            }}
+            className="border-2 border-foreground bg-background"
+          >
             {/* Month header - Compact */}
             <div className="border-b-2 border-foreground p-2 bg-foreground text-background flex items-center justify-between">
               <h3 className="font-bold text-xs uppercase">{monthName}</h3>
@@ -111,7 +136,7 @@ export function MultiMonthCalendar({
                   return (
                     <div
                       key={`empty-${index}`}
-                      className="aspect-square border-r border-b border-foreground/20 last:border-r-0 bg-muted/30 min-h-[28px]"
+                      className="border-r border-b border-foreground/20 last:border-r-0 bg-muted/30 h-[24px]"
                     />
                   );
                 }
@@ -137,9 +162,9 @@ export function MultiMonthCalendar({
                       if (update) onDateClick(update);
                     }}
                     className={`
-                      aspect-square border-r border-b border-foreground/20 last:border-r-0
+                      border-r border-b border-foreground/20 last:border-r-0 h-[24px]
                       p-0.5 hover:bg-muted/50 active:bg-muted transition-colors relative
-                      touch-manipulation min-h-[28px]
+                      touch-manipulation flex flex-col items-center justify-center
                       ${isCurrentDay ? 'bg-yellow-100 ring-2 ring-yellow-500 ring-inset' : ''}
                       ${!isPastDay && !isCurrentDay ? 'bg-gray-50 opacity-60' : ''}
                       ${dayUpdates.length > 0 ? 'cursor-pointer' : 'cursor-default'}

@@ -75,11 +75,13 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
     tags: []
   } : null;
 
-  // Create locked cards for remaining days (only for current cycle)
-  const lockedCards: DailyUpdate[] = [];
+  // Create unlocked/locked cards for remaining days
+  const placeholderCards: DailyUpdate[] = [];
+
   if (isCurrentCycle && wipCard) {
+    // For current cycle: show locked cards for future days
     for (let i = nextDayNumber + 1; i <= cycleGoal; i++) {
-      lockedCards.push({
+      placeholderCards.push({
         day: i,
         date: '', // No date yet
         cycleId: selectedCycleId,
@@ -92,43 +94,36 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
         tags: []
       });
     }
-  }
-
-  // For past cycles, show locked placeholders for next month's cycle
-  if (!isCurrentCycle) {
-    const nextCycleIndex = data.cycles.findIndex(c => c.id === selectedCycleId) + 1;
-    if (nextCycleIndex < data.cycles.length) {
-      const nextCycle = data.cycles[nextCycleIndex];
-      // Add a few placeholder cards to show what's coming
-      for (let i = 1; i <= Math.min(3, nextCycle.goal); i++) {
-        lockedCards.push({
-          day: i,
-          date: '',
-          cycleId: nextCycle.id,
-          projectId: '',
-          title: `${nextCycle.name} - Day ${i}`,
-          description: 'Next cycle preview...',
-          highlights: [],
-          version: `v${nextCycle.id}-${i}`,
-          status: 'locked' as const,
-          tags: []
-        });
-      }
+  } else if (!isCurrentCycle) {
+    // For future cycles (like Jan): show all days as unlocked placeholders
+    for (let i = 1; i <= cycleGoal; i++) {
+      placeholderCards.push({
+        day: i,
+        date: '',
+        cycleId: selectedCycleId,
+        projectId: '',
+        title: `Day ${i}`,
+        description: 'Coming soon...',
+        highlights: [],
+        version: `v0.${i}.0`,
+        status: 'locked' as const,
+        tags: []
+      });
     }
   }
 
-  // Combine: released + WIP + locked, sorted by day number
+  // Combine: released + WIP + placeholders, sorted by day number
   const allDays: DailyUpdate[] = [
     ...releasedDays,
     ...(wipCard ? [wipCard] : []),
-    ...lockedCards
+    ...placeholderCards
   ].sort((a, b) => a.day - b.day);
 
   // Current cycle stats
   const cycleStats = {
     released: releasedDays.filter(u => u.status === 'released').length,
     upcoming: wipCard ? 1 : 0,
-    locked: lockedCards.length,
+    locked: placeholderCards.length,
     goal: cycleGoal
   };
 
@@ -290,6 +285,7 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
               updates={data.updates}
               projects={data.projects}
               selectedProject={selectedProjectFilter}
+              selectedCycleId={selectedCycleId}
               onDateClick={handleCardClick}
             />
           </div>
