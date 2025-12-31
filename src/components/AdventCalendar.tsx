@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import type { DailyUpdate, UpdatesData, Project } from '../types/update';
 import { AdventCard } from './AdventCard';
 import { UpdateModal } from './UpdateModal';
-import { CalendarGrid } from './CalendarGrid';
-import { Calendar, LayoutGrid } from 'lucide-react';
+import { Calendar, LayoutGrid, ChevronDown } from 'lucide-react';
 
 type ViewMode = 'calendar' | 'cards';
 
@@ -15,8 +14,15 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
   const [selectedUpdate, setSelectedUpdate] = useState<DailyUpdate | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProjectFilter, setSelectedProjectFilter] = useState<string | null>(null);
-  const [currentMonth, setCurrentMonth] = useState(new Date(data.startDate));
   const [viewMode, setViewMode] = useState<ViewMode>('calendar'); // Default to calendar view
+
+  // Get current cycle (latest cycle by date)
+  const currentCycle = useMemo(() => {
+    const today = new Date().toISOString().split('T')[0];
+    return data.cycles.find(c => today >= c.startDate && today <= c.endDate) || data.cycles[data.cycles.length - 1];
+  }, [data.cycles]);
+
+  const [selectedCycleId, setSelectedCycleId] = useState<string>(currentCycle.id);
 
   const handleCardClick = (update: DailyUpdate) => {
     if (update.status !== 'locked') {
@@ -34,24 +40,31 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
     return data.projects.find(p => p.id === projectId);
   };
 
-  // Get all days from updates, sorted by day number
-  const releasedDays = [...data.updates].sort((a, b) => a.day - b.day);
+  const selectedCycle = data.cycles.find(c => c.id === selectedCycleId) || currentCycle;
+
+  // Get all days from updates for selected cycle, sorted by day number
+  const cycleUpdates = data.updates.filter(u => u.cycleId === selectedCycleId);
+  const releasedDays = [...cycleUpdates].sort((a, b) => a.day - b.day);
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  // Find the next unreleased day number
+  // Only create WIP/locked cards for current cycle
+  const isCurrentCycle = selectedCycleId === currentCycle.id;
+
+  // Find the next unreleased day number for this cycle
   const maxDay = releasedDays.length > 0
     ? Math.max(...releasedDays.map(u => u.day))
     : 0;
 
   const nextDayNumber = maxDay + 1;
-  const sprintGoal = 8; // Total days goal for December
+  const cycleGoal = selectedCycle.goal;
 
-  // Create WIP card for next day (if within sprint goal)
-  const wipCard: DailyUpdate | null = nextDayNumber <= sprintGoal ? {
+  // Create WIP card for next day (only for current cycle, if within goal)
+  const wipCard: DailyUpdate | null = isCurrentCycle && nextDayNumber <= cycleGoal ? {
     day: nextDayNumber,
     date: today.toISOString().split('T')[0],
+    cycleId: selectedCycleId,
     projectId: '',
     title: `Day ${nextDayNumber}`,
     description: 'Coming soon...',
@@ -61,13 +74,14 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
     tags: []
   } : null;
 
-  // Create locked cards for remaining days
+  // Create locked cards for remaining days (only for current cycle)
   const lockedCards: DailyUpdate[] = [];
-  if (wipCard) {
-    for (let i = nextDayNumber + 1; i <= sprintGoal; i++) {
+  if (isCurrentCycle && wipCard) {
+    for (let i = nextDayNumber + 1; i <= cycleGoal; i++) {
       lockedCards.push({
         day: i,
         date: '', // No date yet
+        cycleId: selectedCycleId,
         projectId: '',
         title: `Day ${i}`,
         description: 'Coming soon...',
@@ -86,10 +100,23 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
     ...lockedCards
   ].sort((a, b) => a.day - b.day);
 
-  const stats = {
+  // Current cycle stats
+  const cycleStats = {
     released: releasedDays.filter(u => u.status === 'released').length,
     upcoming: wipCard ? 1 : 0,
     locked: lockedCards.length,
+    goal: cycleGoal
+  };
+
+  // Total stats (all cycles, all time)
+  const allReleasedUpdates = data.updates.filter(u => u.status === 'released');
+  const totalReleases = allReleasedUpdates.length;
+  const overallStart = new Date(data.overallStartDate);
+  const totalDays = Math.ceil((today.getTime() - overallStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+
+  const totalStats = {
+    releases: totalReleases,
+    days: totalDays
   };
 
   return (
@@ -115,7 +142,7 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
       <div className="container mx-auto px-4 py-6">
         {/* View Switcher, Project Filters & Progress - All in one row */}
         <div className="mb-6 flex flex-wrap items-center gap-3 justify-between">
-          {/* Left side: View Toggle + Project Filters */}
+          {/* Left side: View Toggle + Cycle Selector + Project Filters */}
           <div className="flex flex-wrap items-center gap-3">
             {/* View Toggle */}
             <div className="flex border-4 border-foreground pixel-border overflow-hidden h-[44px]">
@@ -146,6 +173,22 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
                 <LayoutGrid className="w-4 h-4" strokeWidth={3} />
                 <span className="hidden sm:inline">Cards</span>
               </button>
+            </div>
+
+            {/* Cycle Selector Dropdown */}
+            <div className="relative">
+              <select
+                value={selectedCycleId}
+                onChange={(e) => setSelectedCycleId(e.target.value)}
+                className="h-[44px] px-4 pr-10 border-4 border-foreground pixel-border bg-background font-bold uppercase text-xs appearance-none cursor-pointer hover:bg-muted transition-colors"
+              >
+                {data.cycles.map((cycle) => (
+                  <option key={cycle.id} value={cycle.id}>
+                    {cycle.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" strokeWidth={3} />
             </div>
 
             {/* Project Filter Pills */}
@@ -183,21 +226,37 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
             )}
           </div>
 
-          {/* Right side: Progress Bar */}
-          <div className="flex items-center gap-3 border-4 border-foreground pixel-border px-4 h-[44px] bg-background min-w-[240px]">
-            <div className="flex-1">
-              <div className="text-xs font-bold font-mono mb-1 uppercase">
-                {stats.released}/{sprintGoal} Released
+          {/* Right side: Dual Progress Indicators */}
+          <div className="flex items-center gap-3">
+            {/* Current Cycle Progress */}
+            <div className="flex items-center gap-3 border-4 border-foreground pixel-border px-4 h-[44px] bg-background min-w-[240px]">
+              <div className="flex-1">
+                <div className="text-xs font-bold font-mono mb-1 uppercase">
+                  {cycleStats.released}/{cycleStats.goal} Released
+                </div>
+                <div className="w-full h-2 border-2 border-foreground bg-muted">
+                  <div
+                    className="h-full bg-green-500 transition-all duration-500"
+                    style={{ width: `${(cycleStats.released / cycleStats.goal) * 100}%` }}
+                  />
+                </div>
               </div>
-              <div className="w-full h-2 border-2 border-foreground bg-muted">
-                <div
-                  className="h-full bg-green-500 transition-all duration-500"
-                  style={{ width: `${(stats.released / sprintGoal) * 100}%` }}
-                />
+              <div className="text-2xl font-bold font-mono">
+                {Math.round((cycleStats.released / cycleStats.goal) * 100)}%
               </div>
             </div>
-            <div className="text-2xl font-bold font-mono">
-              {Math.round((stats.released / sprintGoal) * 100)}%
+
+            {/* Total Stats */}
+            <div className="flex items-center gap-2 border-4 border-foreground pixel-border px-4 h-[44px] bg-purple-500 text-background">
+              <div className="font-mono font-bold text-xs uppercase">
+                <div className="text-2xl">{totalStats.releases}</div>
+                <div className="text-[10px] opacity-80">TOTAL</div>
+              </div>
+              <div className="text-2xl font-bold">/</div>
+              <div className="font-mono font-bold text-xs uppercase">
+                <div className="text-2xl">{totalStats.days}</div>
+                <div className="text-[10px] opacity-80">DAYS</div>
+              </div>
             </div>
           </div>
         </div>
@@ -205,16 +264,11 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
         {/* Calendar View - Full Width */}
         {viewMode === 'calendar' && (
           <div className="w-full">
-            <CalendarGrid
-              updates={data.updates}
-              projects={data.projects}
-              currentMonth={currentMonth}
-              onMonthChange={setCurrentMonth}
-              selectedProject={selectedProjectFilter}
-              onDateClick={(update) => {
-                if (update) handleCardClick(update);
-              }}
-            />
+            {/* TODO: Implement endless scroll calendar view with all cycles */}
+            <div className="border-4 border-foreground pixel-border p-8 text-center">
+              <p className="font-mono text-sm">Calendar view coming soon with endless scroll!</p>
+              <p className="font-mono text-xs mt-2 opacity-60">For now, use Cards view to see releases</p>
+            </div>
           </div>
         )}
 
