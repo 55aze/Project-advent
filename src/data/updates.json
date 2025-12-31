@@ -235,6 +235,42 @@
       "version": "v0.5.0",
       "status": "released",
       "tags": ["ai", "ux", "gemini", "caching"]
+    },
+    {
+      "day": 8,
+      "cycleId": "dec-2025",
+      "date": "2025-12-31",
+      "projectId": "build-tracker",
+      "title": "Day 8: Calendar Optimization & Semantic Positioning",
+      "description": "Final release of December cycle. Optimized Build Tracker calendar UX and introduced semantic positioning system for Mind Galaxy.",
+      "highlights": [],
+      "version": "v0.8.0",
+      "status": "released",
+      "tags": ["multi-project", "calendar", "ai", "embeddings"],
+      "projectUpdates": [
+        {
+          "projectId": "build-tracker",
+          "title": "Calendar View Polish & Navigation",
+          "description": "Improved calendar density and added automatic navigation when switching between release cycles.",
+          "highlights": [
+            "Reduced calendar cell height to 24px for better vertical space usage",
+            "Auto-scroll to selected cycle's month when switching between December and January"
+          ],
+          "version": "v0.6.0",
+          "tags": ["calendar", "ux", "navigation"]
+        },
+        {
+          "projectId": "mind-galaxy",
+          "title": "Semantic Positioning System",
+          "description": "Thoughts now position themselves by meaning instead of just AI-detected connections. Switch between semantic similarity mode and connection-based mode.",
+          "highlights": [
+            "Built embedding-based positioning where nearby nodes mean similar ideas",
+            "Added smart batch processing for OpenAI embeddings with rate limits (3 requests/minute)"
+          ],
+          "version": "v0.6.0",
+          "tags": ["ai", "embeddings", "openai", "positioning"]
+        }
+      ]
     }
   ]
 }
