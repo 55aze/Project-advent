@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import type { DailyUpdate, UpdatesData, Project } from '../types/update';
 import { AdventCard } from './AdventCard';
 import { UpdateModal } from './UpdateModal';
+import { MultiMonthCalendar } from './MultiMonthCalendar';
 import { Calendar, LayoutGrid, ChevronDown } from 'lucide-react';
 
 type ViewMode = 'calendar' | 'cards';
@@ -261,14 +262,16 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
           </div>
         </div>
 
-        {/* Calendar View - Full Width */}
+        {/* Calendar View - Endless Scroll with All Months */}
         {viewMode === 'calendar' && (
           <div className="w-full">
-            {/* TODO: Implement endless scroll calendar view with all cycles */}
-            <div className="border-4 border-foreground pixel-border p-8 text-center">
-              <p className="font-mono text-sm">Calendar view coming soon with endless scroll!</p>
-              <p className="font-mono text-xs mt-2 opacity-60">For now, use Cards view to see releases</p>
-            </div>
+            <MultiMonthCalendar
+              cycles={data.cycles}
+              updates={data.updates}
+              projects={data.projects}
+              selectedProject={selectedProjectFilter}
+              onDateClick={handleCardClick}
+            />
           </div>
         )}
 
