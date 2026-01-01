@@ -262,15 +262,32 @@
         {
           "projectId": "mind-galaxy",
           "title": "Semantic Positioning System",
-          "description": "Thoughts now position themselves by meaning instead of just AI-detected connections. Switch between semantic similarity mode and connection-based mode.",
+          "description": "Thoughts now arrange themselves by meaning instead of just AI-detected connections. Explored local AI embeddings but switched to OpenAI API due to bundling issues.",
           "highlights": [
-            "Built embedding-based positioning where nearby nodes mean similar ideas",
-            "Added smart batch processing for OpenAI embeddings with rate limits (3 requests/minute)"
+            "Built semantic positioning mode where similar ideas cluster together using AI embeddings",
+            "Tried local browser-based embeddings but hit technical issues with bundling",
+            "Switched to OpenAI API with smart rate limiting (processes 3 embeddings per minute)"
           ],
           "version": "v0.6.0",
           "tags": ["ai", "embeddings", "openai", "positioning"]
         }
       ]
+    },
+    {
+      "day": 9,
+      "cycleId": "jan-2026",
+      "date": "2026-01-01",
+      "projectId": "mind-galaxy",
+      "title": "Embedding System Exploration",
+      "description": "Experimented with AI embeddings to arrange thoughts by meaning. Explored both local browser-based and cloud API options, dealing with technical challenges and API rate limits.",
+      "highlights": [
+        "Built semantic positioning where thoughts cluster by meaning using AI embeddings",
+        "Tried local embeddings but hit bundling issues, switched to OpenAI API",
+        "Added smart rate limiting to handle API call restrictions"
+      ],
+      "version": "v0.7.0",
+      "status": "released",
+      "tags": ["ai", "embeddings", "experimentation"]
     }
   ]
 }
