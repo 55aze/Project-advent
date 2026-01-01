@@ -272,6 +272,22 @@
           "tags": ["ai", "embeddings", "openai", "positioning"]
         }
       ]
+    },
+    {
+      "day": 9,
+      "cycleId": "jan-2026",
+      "date": "2026-01-01",
+      "projectId": "mind-galaxy",
+      "title": "Embedding System Exploration",
+      "description": "Experimented with AI embeddings to arrange thoughts by meaning. Explored both local browser-based and cloud API options, dealing with technical challenges and API rate limits.",
+      "highlights": [
+        "Built semantic positioning where thoughts cluster by meaning using AI embeddings",
+        "Tried local embeddings but hit bundling issues, switched to OpenAI API",
+        "Added smart rate limiting to handle API call restrictions"
+      ],
+      "version": "v0.7.0",
+      "status": "released",
+      "tags": ["ai", "embeddings", "experimentation"]
     }
   ]
 }
