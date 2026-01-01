@@ -50,8 +50,9 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  // Only create WIP/locked cards for current cycle
+  // Determine if selected cycle is current or future
   const isCurrentCycle = selectedCycleId === currentCycle.id;
+  const isFutureCycle = new Date(selectedCycle.startDate) > today;
 
   // Find the next unreleased day number for this cycle
   const maxDay = releasedDays.length > 0
@@ -94,8 +95,8 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
         tags: []
       });
     }
-  } else if (!isCurrentCycle) {
-    // For future cycles (like Jan): show all days as unlocked placeholders
+  } else if (isFutureCycle) {
+    // For future cycles only: show all days as unlocked placeholders
     for (let i = 1; i <= cycleGoal; i++) {
       placeholderCards.push({
         day: i,
@@ -111,6 +112,7 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
       });
     }
   }
+  // For past cycles: no placeholders needed, just show actual updates
 
   // Combine: released + WIP + placeholders, sorted by day number
   const allDays: DailyUpdate[] = [
