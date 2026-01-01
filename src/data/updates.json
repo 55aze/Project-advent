@@ -274,7 +274,7 @@
       ]
     },
     {
-      "day": 9,
+      "day": 1,
       "cycleId": "jan-2026",
       "date": "2026-01-01",
       "projectId": "mind-galaxy",
@@ -285,7 +285,7 @@
         "Tried local embeddings but hit bundling issues, switched to OpenAI API",
         "Added smart rate limiting to handle API call restrictions"
       ],
-      "version": "v0.7.0",
+      "version": "v0.1.0",
       "status": "released",
       "tags": ["ai", "embeddings", "experimentation"]
     }
