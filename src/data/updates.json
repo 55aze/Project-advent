@@ -304,6 +304,21 @@
       "version": "v0.2.0",
       "status": "released",
       "tags": ["bug-fix", "performance", "foundation"]
+    },
+    {
+      "day": 3,
+      "cycleId": "jan-2026",
+      "date": "2026-01-03",
+      "projectId": "mind-galaxy",
+      "title": "Embedding & Clustering Optimization",
+      "description": "Streamlined the embedding system with improved caching for 1500+ node vectors and 2D cluster visualization.",
+      "highlights": [
+        "Optimized node vectorization cache and loading logic for faster embedding processing",
+        "Known Issue: Frontend freezes when clustering 100+ nodes to 2D - clustering algorithm needs optimization"
+      ],
+      "version": "v0.3.0",
+      "status": "released",
+      "tags": ["optimization", "embeddings", "clustering", "performance"]
     }
   ]
 }
