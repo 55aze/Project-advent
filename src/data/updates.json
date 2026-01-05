@@ -319,6 +319,22 @@
       "version": "v0.3.0",
       "status": "released",
       "tags": ["optimization", "embeddings", "clustering", "performance"]
+    },
+    {
+      "day": 4,
+      "cycleId": "jan-2026",
+      "date": "2026-01-05",
+      "projectId": "mind-galaxy",
+      "title": "Critical Bug Fixes",
+      "description": "Fixed major bugs blocking visualization. Nodes position correctly, UI freeze eliminated, and storage errors resolved.",
+      "highlights": [
+        "Fixed positioning: nodes now spread semantically instead of clustering at (0,0)",
+        "Eliminated freeze: reduced load from 30+ seconds to 2-5 seconds (or <1s cached)",
+        "Resolved storage quota errors preventing saves"
+      ],
+      "version": "v0.4.0",
+      "status": "released",
+      "tags": ["bug-fix", "performance", "storage"]
     }
   ]
 }
