@@ -36,6 +36,13 @@
       "description": "AI-powered note-catching app to organize fleeting thoughts",
       "color": "#8338EC",
       "emoji": "🌌"
+    },
+    {
+      "id": "trading-scanner",
+      "name": "4/3/2/1 Scanner",
+      "description": "Automated multi-timeframe trading scanner that detects high-probability entry signals across 200+ stocks",
+      "color": "#3A86FF",
+      "emoji": "📊"
     }
   ],
   "updates": [
@@ -335,6 +342,25 @@
       "version": "v0.4.0",
       "status": "released",
       "tags": ["bug-fix", "performance", "storage"]
+    },
+    {
+      "day": 5,
+      "cycleId": "jan-2026",
+      "date": "2026-01-06",
+      "projectId": "trading-scanner",
+      "title": "4/3/2/1 Trading Scanner",
+      "description": "Built production-ready scanner that analyzes 200+ stocks across multiple timeframes (1D/4H/3H/2H/1H) with momentum confirmation (30M/5M). Achieved 100% accuracy matching TradingView signals.",
+      "highlights": [
+        "Resolved data alignment issues - 100% accuracy vs TradingView",
+        "Multi-timeframe resonance analysis (1D, 4H, 3H, 2H, 1H)",
+        "Momentum confirmation system (30M, 5M)",
+        "Scans 200+ tickers in under 2 hours",
+        "CSV export with priority-ranked signals",
+        "Interactive launcher with customizable ticker lists"
+      ],
+      "version": "v0.1.0",
+      "status": "released",
+      "tags": ["trading", "scanner", "automation", "multi-timeframe"]
     }
   ]
 }
