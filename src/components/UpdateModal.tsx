@@ -6,8 +6,8 @@ import {
   DialogTitle,
 } from './ui/dialog';
 import { Button } from './ui/button';
-import { Copy, Twitter, X, Clock } from 'lucide-react';
-import { useState } from 'react';
+import { Copy, Twitter, X, Clock, Save, Image } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 interface UpdateModalProps {
   update: DailyUpdate | null;
@@ -15,11 +15,35 @@ interface UpdateModalProps {
   open: boolean;
   onClose: () => void;
   allProjects: Project[];
+  editMode?: boolean;
+  onSave?: (update: DailyUpdate) => void;
 }
 
-export function UpdateModal({ update, project, open, onClose, allProjects }: UpdateModalProps) {
+export function UpdateModal({ update, project, open, onClose, allProjects, editMode = false, onSave }: UpdateModalProps) {
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
+  const [imageUrl, setImageUrl] = useState('');
+  const [gifUrl, setGifUrl] = useState('');
+
+  // Initialize image URLs from update
+  useEffect(() => {
+    if (update) {
+      setImageUrl(update.imageUrl || '');
+      setGifUrl(update.gifUrl || '');
+    }
+  }, [update]);
+
+  const handleSave = () => {
+    if (update && onSave) {
+      const updatedUpdate = {
+        ...update,
+        imageUrl: imageUrl.trim() || undefined,
+        gifUrl: gifUrl.trim() || undefined,
+      };
+      onSave(updatedUpdate);
+      onClose();
+    }
+  };
 
   if (!update) return null;
 
@@ -157,14 +181,66 @@ ${update.timeSpent ? `⏱️ ${update.timeSpent}` : ''}
             </div>
           )}
 
-          {/* GIF/Image */}
-          {(update.gifUrl || update.imageUrl) && (
+          {/* GIF/Image Display */}
+          {(update.gifUrl || update.imageUrl || imageUrl || gifUrl) && (
             <div className="border-4 border-foreground pixel-border">
               <img
-                src={update.gifUrl || update.imageUrl}
+                src={gifUrl || imageUrl || update.gifUrl || update.imageUrl}
                 alt={displayTitle}
                 className="w-full h-auto"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
               />
+            </div>
+          )}
+
+          {/* Image URL Inputs (Edit Mode) */}
+          {editMode && (
+            <div className="border-4 border-foreground p-4 bg-yellow-50 space-y-4">
+              <div className="flex items-center gap-2 mb-3">
+                <Image className="w-5 h-5" strokeWidth={3} />
+                <h3 className="font-bold text-sm uppercase">ADD IMAGE/GIF</h3>
+              </div>
+
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs font-bold mb-2 uppercase">
+                    Image URL (optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={imageUrl}
+                    onChange={(e) => setImageUrl(e.target.value)}
+                    placeholder="https://example.com/image.png"
+                    className="w-full px-3 py-2 border-2 border-foreground font-mono text-sm bg-background"
+                  />
+                  <p className="text-xs mt-1 opacity-70">
+                    Upload to Imgur, Cloudinary, or similar and paste URL here
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold mb-2 uppercase">
+                    GIF URL (optional, takes priority over image)
+                  </label>
+                  <input
+                    type="text"
+                    value={gifUrl}
+                    onChange={(e) => setGifUrl(e.target.value)}
+                    placeholder="https://example.com/animation.gif"
+                    className="w-full px-3 py-2 border-2 border-foreground font-mono text-sm bg-background"
+                  />
+                </div>
+              </div>
+
+              <Button
+                onClick={handleSave}
+                className="w-full border-4 border-foreground bg-green-500 text-background pixel-border-sm retro-hover font-bold uppercase flex items-center justify-center gap-2"
+              >
+                <Save className="w-4 h-4" strokeWidth={3} />
+                SAVE IMAGES
+              </Button>
             </div>
           )}
 

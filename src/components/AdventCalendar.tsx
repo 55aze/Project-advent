@@ -1,9 +1,9 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import type { DailyUpdate, UpdatesData, Project } from '../types/update';
 import { AdventCard } from './AdventCard';
 import { UpdateModal } from './UpdateModal';
 import { MultiMonthCalendar } from './MultiMonthCalendar';
-import { Calendar, LayoutGrid, ChevronDown } from 'lucide-react';
+import { Calendar, LayoutGrid, ChevronDown, Edit, Download } from 'lucide-react';
 
 type ViewMode = 'calendar' | 'cards';
 
@@ -16,12 +16,53 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProjectFilter, setSelectedProjectFilter] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('calendar'); // Default to calendar view
+  const [editMode, setEditMode] = useState(false);
+  const [updatesData, setUpdatesData] = useState<UpdatesData>(data);
+
+  // Load saved updates from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('advent-updates-edits');
+    if (saved) {
+      try {
+        const savedData = JSON.parse(saved);
+        setUpdatesData(savedData);
+      } catch (e) {
+        console.error('Failed to load saved updates:', e);
+      }
+    }
+  }, []);
+
+  // Save to localStorage whenever updates change
+  const handleUpdateSave = (updatedUpdate: DailyUpdate) => {
+    const newUpdatesData = {
+      ...updatesData,
+      updates: updatesData.updates.map(u =>
+        u.day === updatedUpdate.day && u.cycleId === updatedUpdate.cycleId
+          ? updatedUpdate
+          : u
+      )
+    };
+    setUpdatesData(newUpdatesData);
+    localStorage.setItem('advent-updates-edits', JSON.stringify(newUpdatesData));
+  };
+
+  // Export function to download updated JSON
+  const handleExportData = () => {
+    const dataStr = JSON.stringify(updatesData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'updates.json';
+    link.click();
+    URL.revokeObjectURL(url);
+  };
 
   // Get current cycle (latest cycle by date)
   const currentCycle = useMemo(() => {
     const today = new Date().toISOString().split('T')[0];
-    return data.cycles.find(c => today >= c.startDate && today <= c.endDate) || data.cycles[data.cycles.length - 1];
-  }, [data.cycles]);
+    return updatesData.cycles.find(c => today >= c.startDate && today <= c.endDate) || updatesData.cycles[updatesData.cycles.length - 1];
+  }, [updatesData.cycles]);
 
   const [selectedCycleId, setSelectedCycleId] = useState<string>(currentCycle.id);
 
@@ -38,13 +79,13 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
   };
 
   const getProject = (projectId: string): Project | undefined => {
-    return data.projects.find(p => p.id === projectId);
+    return updatesData.projects.find(p => p.id === projectId);
   };
 
-  const selectedCycle = data.cycles.find(c => c.id === selectedCycleId) || currentCycle;
+  const selectedCycle = updatesData.cycles.find(c => c.id === selectedCycleId) || currentCycle;
 
   // Get all days from updates for selected cycle, sorted by day number
-  const cycleUpdates = data.updates.filter(u => u.cycleId === selectedCycleId);
+  const cycleUpdates = updatesData.updates.filter(u => u.cycleId === selectedCycleId);
   const releasedDays = [...cycleUpdates].sort((a, b) => a.day - b.day);
 
   const today = new Date();
@@ -130,9 +171,9 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
   };
 
   // Total stats (all cycles, all time)
-  const allReleasedUpdates = data.updates.filter(u => u.status === 'released');
+  const allReleasedUpdates = updatesData.updates.filter(u => u.status === 'released');
   const totalReleases = allReleasedUpdates.length;
-  const overallStart = new Date(data.overallStartDate);
+  const overallStart = new Date(updatesData.overallStartDate);
   const totalDays = Math.ceil((today.getTime() - overallStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 
   const totalStats = {
@@ -147,14 +188,16 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between gap-4">
             {/* Title */}
-            <h1 className="text-2xl md:text-3xl font-bold uppercase">
-              {data.title}
-            </h1>
+            <div className="flex-1">
+              <h1 className="text-2xl md:text-3xl font-bold uppercase">
+                {updatesData.title}
+              </h1>
+            </div>
 
             {/* General Stats */}
             <div className="flex items-center gap-4 text-xs font-mono font-bold">
               <div className="text-right">
-                <div className="text-xl">{data.cycles.length}</div>
+                <div className="text-xl">{updatesData.cycles.length}</div>
                 <div className="opacity-70">CYCLES</div>
               </div>
               <div className="text-2xl opacity-50">•</div>
@@ -163,6 +206,32 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
                 <div className="opacity-70">RELEASES / DAYS</div>
               </div>
             </div>
+
+            {/* Edit Mode Toggle */}
+            <button
+              onClick={() => setEditMode(!editMode)}
+              className={`
+                flex items-center gap-2 px-4 py-2 border-4 border-background font-bold uppercase text-sm pixel-border transition-colors
+                ${editMode
+                  ? 'bg-yellow-400 text-background'
+                  : 'bg-background text-background hover:bg-yellow-400/20'
+                }
+              `}
+            >
+              <Edit className="w-4 h-4" strokeWidth={3} />
+              <span className="hidden md:inline">{editMode ? 'EDITING' : 'EDIT'}</span>
+            </button>
+
+            {/* Export Button (only show in edit mode) */}
+            {editMode && (
+              <button
+                onClick={handleExportData}
+                className="flex items-center gap-2 px-4 py-2 border-4 border-background bg-green-500 text-background font-bold uppercase text-sm pixel-border hover:bg-green-400 transition-colors"
+              >
+                <Download className="w-4 h-4" strokeWidth={3} />
+                <span className="hidden md:inline">EXPORT</span>
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -206,7 +275,7 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
               </div>
 
               {/* Project Filter Pills */}
-              {data.projects.length > 1 && (
+              {updatesData.projects.length > 1 && (
                 <>
                   <button
                     onClick={() => setSelectedProjectFilter(null)}
@@ -220,7 +289,7 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
                   >
                     ALL PROJECTS
                   </button>
-                  {data.projects.map((project) => (
+                  {updatesData.projects.map((project) => (
                     <button
                       key={project.id}
                       onClick={() => setSelectedProjectFilter(project.id)}
@@ -249,7 +318,7 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
                   onChange={(e) => setSelectedCycleId(e.target.value)}
                   className="h-[44px] px-4 pr-10 border-4 border-foreground pixel-border bg-background font-bold uppercase text-xs appearance-none cursor-pointer hover:bg-muted transition-colors"
                 >
-                  {data.cycles.map((cycle) => (
+                  {updatesData.cycles.map((cycle) => (
                     <option key={cycle.id} value={cycle.id}>
                       {cycle.name}
                     </option>
@@ -283,9 +352,9 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
         {viewMode === 'calendar' && (
           <div className="w-full">
             <MultiMonthCalendar
-              cycles={data.cycles}
-              updates={data.updates}
-              projects={data.projects}
+              cycles={updatesData.cycles}
+              updates={updatesData.updates}
+              projects={updatesData.projects}
               selectedProject={selectedProjectFilter}
               selectedCycleId={selectedCycleId}
               onDateClick={handleCardClick}
@@ -305,7 +374,7 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
                   project={getProject(update.projectId)}
                   onClick={() => handleCardClick(update)}
                   selectedProjectFilter={selectedProjectFilter}
-                  allProjects={data.projects}
+                  allProjects={updatesData.projects}
                 />
               ))}
             </div>
@@ -319,7 +388,9 @@ export function AdventCalendar({ data }: AdventCalendarProps) {
         project={selectedUpdate ? getProject(selectedUpdate.projectId) : undefined}
         open={modalOpen}
         onClose={handleCloseModal}
-        allProjects={data.projects}
+        allProjects={updatesData.projects}
+        editMode={editMode}
+        onSave={handleUpdateSave}
       />
 
       {/* Footer */}
