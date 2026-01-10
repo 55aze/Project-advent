@@ -384,18 +384,18 @@
       "cycleId": "jan-2026",
       "date": "2026-01-09",
       "projectId": "trading-scanner",
-      "title": "Aggregation Fix & Signal Detection Debug",
-      "description": "Fixed critical aggregation bug that was losing 14% of data, but discovered signal detection logic doesn't match TradingView. Scanner now produces correct bar counts but still shows false signals that need debugging.",
+      "title": "Aggregation Fix & Signal Mismatch Research",
+      "description": "Fixed aggregation bug losing 14% of data and researched signal detection mismatch with TradingView. Time aggregation now works correctly but signal logic still shows minor variance. Tried multiple approaches but issue persists.",
       "highlights": [
         "Fixed 'dropped bar' bug in 1H/2H aggregation (was losing 14% of data)",
-        "Confirmed aggregation produces correct bar counts (7 bars per day, not 6)",
-        "Discovered scanner shows 3 false signals on Jan 5 vs TradingView",
-        "Root cause: Signal detection logic differs from Pine Script requirements"
+        "Confirmed time aggregation produces correct bar counts (7 bars per day)",
+        "Researched signal mismatch: scanner shows slight variance vs TradingView",
+        "Tried different approaches but problem not fully solved yet"
       ],
       "version": "v0.2.0",
       "status": "released",
-      "tags": ["bug-fix", "debugging", "signal-detection", "aggregation"],
-      "timeSpent": "3 hours"
+      "tags": ["bug-fix", "debugging", "research", "signal-detection"],
+      "timeSpent": "4 hours"
     }
   ]
 }
