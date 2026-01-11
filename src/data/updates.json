@@ -414,6 +414,24 @@
       "status": "released",
       "tags": ["research", "debugging", "signal-detection", "diagnosis"],
       "timeSpent": "3 hours"
+    },
+    {
+      "day": 9,
+      "cycleId": "jan-2026",
+      "date": "2026-01-11",
+      "projectId": "trading-scanner",
+      "title": "Root Cause Found: Data Source Variance",
+      "description": "Built comparison tools and discovered the root cause of signal mismatches. Minor price differences (~0.01) between IBKR and TradingView data cause 5% of signals to differ on borderline cases. Expanded output to show 30-day signal history.",
+      "highlights": [
+        "Built comparison tools to identify signal discrepancies",
+        "Root cause: ~0.01 price differences between IBKR and TradingView data",
+        "5% of signals differ due to borderline price thresholds",
+        "Updated scanner to show all signals from last 30 days (vs shorter windows)"
+      ],
+      "version": "v0.3.0",
+      "status": "released",
+      "tags": ["root-cause", "data-source", "comparison-tools", "enhancement"],
+      "timeSpent": "4 hours"
     }
   ]
 }
