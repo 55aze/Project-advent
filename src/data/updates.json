@@ -468,6 +468,43 @@
       "status": "released",
       "tags": ["bug-fix", "production", "data-refresh", "categories"],
       "timeSpent": "3 hours"
+    },
+    {
+      "day": 12,
+      "cycleId": "jan-2026",
+      "date": "2026-01-14",
+      "projectId": "trading-scanner",
+      "title": "Code Refactor: Modular Architecture",
+      "description": "Major code refactoring for cleaner and more robust structure. Separated scanner into independent modules for data download, aggregation, signal detection, and priority calculation. Each component now works independently for better testing and maintenance.",
+      "highlights": [
+        "Refactored codebase into modular architecture with independent functions",
+        "Separated data download logic from processing pipeline",
+        "Isolated aggregation, signal detection, and priority calculation into distinct modules",
+        "Improved code maintainability and testability with cleaner structure"
+      ],
+      "version": "v1.1.0",
+      "status": "released",
+      "tags": ["refactoring", "architecture", "code-quality", "modularity"],
+      "timeSpent": "4 hours"
+    },
+    {
+      "day": 13,
+      "cycleId": "jan-2026",
+      "date": "2026-01-14",
+      "projectId": "trading-scanner",
+      "title": "Complete Module Separation",
+      "description": "Restructured entire app into fully independent modular functions. Each component (ticker list, data loader, aggregation, signal detection, priority calculation) now operates as a standalone module with clear interfaces.",
+      "highlights": [
+        "Separated ticker list management into independent module",
+        "Isolated data loader with clean API for market data fetching",
+        "Modularized data aggregation logic for different timeframes",
+        "Split Chaodi signal detection into standalone function",
+        "Extracted priority signal calculation as independent module"
+      ],
+      "version": "v1.2.0",
+      "status": "released",
+      "tags": ["refactoring", "modularity", "separation-of-concerns", "architecture"],
+      "timeSpent": "5 hours"
     }
   ]
 }
