@@ -505,6 +505,23 @@
       "status": "released",
       "tags": ["refactoring", "modularity", "separation-of-concerns", "architecture"],
       "timeSpent": "5 hours"
+    },
+    {
+      "day": 14,
+      "cycleId": "jan-2026",
+      "date": "2026-01-15",
+      "projectId": "trading-scanner",
+      "title": "Bug Fixes & Project Cleanup",
+      "description": "Fixed signal detection bug for December 2025 OKLO signals, cleaned up project folder by removing temporary debug scripts, and fixed configuration issues with cache paths and download settings.",
+      "highlights": [
+        "Fixed signal detection bug - OKLO signals (Dec 22, Dec 24, Jan 02) now correctly detected",
+        "Cleaned up project folder - removed temporary debug scripts and organized files",
+        "Fixed configuration issues - cache paths and download settings work correctly"
+      ],
+      "version": "v1.2.1",
+      "status": "released",
+      "tags": ["bug-fix", "cleanup", "configuration"],
+      "timeSpent": "2 hours"
     }
   ]
 }
