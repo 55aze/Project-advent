@@ -522,6 +522,24 @@
       "status": "released",
       "tags": ["bug-fix", "cleanup", "configuration"],
       "timeSpent": "2 hours"
+    },
+    {
+      "day": 15,
+      "cycleId": "jan-2026",
+      "date": "2026-01-16",
+      "projectId": "trading-scanner",
+      "title": "Weekly Signal Detection Added",
+      "description": "Added weekly chaodi (抄底) signal detection for longer-term bottom-fishing signals. Downloads 2 years of weekly data and assigns highest priority weight (70 points) as large timeframe indicator.",
+      "highlights": [
+        "Added weekly chaodi (抄底) signal detection for long-term signals",
+        "Downloads 2 years of weekly data from IBKR",
+        "Weekly signals get highest priority (70 points) as strongest large timeframe indicator",
+        "Integrated into resonance analysis alongside daily and 4H timeframes"
+      ],
+      "version": "v1.3.0",
+      "status": "released",
+      "tags": ["feature", "weekly-signals", "timeframes", "priority"],
+      "timeSpent": "4 hours"
     }
   ]
 }
