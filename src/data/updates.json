@@ -540,6 +540,25 @@
       "status": "released",
       "tags": ["feature", "weekly-signals", "timeframes", "priority"],
       "timeSpent": "4 hours"
+    },
+    {
+      "day": 16,
+      "cycleId": "jan-2026",
+      "date": "2026-01-17",
+      "projectId": "trading-scanner",
+      "title": "Priority System Redesign (WIP)",
+      "description": "Discussed and designed comprehensive priority system redesign incorporating multiple signal quality factors. Includes 4321 multi-timeframe resonance, support-level validation, collective behavior patterns, 30-minute momentum confirmation, and signal freshness weighting.",
+      "highlights": [
+        "Designed 4321 resonance scoring for multi-timeframe signal alignment",
+        "Added support concept - signals near key price levels get higher priority",
+        "Incorporated collective behavior (集体行为) - multiple stocks showing same pattern increase confidence",
+        "Integrated 30min momentum factors for short-term confirmation",
+        "Designed freshness calculation - newer signals weighted higher than older ones"
+      ],
+      "version": "v1.4.0-beta",
+      "status": "released",
+      "tags": ["design", "priority-system", "wip", "scoring"],
+      "timeSpent": "3 hours"
     }
   ]
 }
