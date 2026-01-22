@@ -610,6 +610,23 @@
       "status": "released",
       "tags": ["export", "formatting", "usability"],
       "timeSpent": "2 hours"
+    },
+    {
+      "day": 20,
+      "cycleId": "jan-2026",
+      "date": "2026-01-21",
+      "projectId": "trading-scanner",
+      "title": "Scoring System Balance & Ticker Expansion",
+      "description": "Refined priority scoring system for better balance and expanded ticker coverage to include AI data center and drone stocks.",
+      "highlights": [
+        "Refined scoring system for better priority balance",
+        "Adjusted priority calculation weights for more accurate ranking",
+        "Expanded ticker list with AI data center and drone stocks"
+      ],
+      "version": "v2.0.3",
+      "status": "released",
+      "tags": ["scoring", "refinement", "tickers"],
+      "timeSpent": "3 hours"
     }
   ]
 }
