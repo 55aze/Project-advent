@@ -627,6 +627,23 @@
       "status": "released",
       "tags": ["scoring", "refinement", "tickers"],
       "timeSpent": "3 hours"
+    },
+    {
+      "day": 21,
+      "cycleId": "jan-2026",
+      "date": "2026-01-22",
+      "projectId": "trading-scanner",
+      "title": "Enhanced Output Format & Sector Momentum",
+      "description": "Enhanced output format with new signal visualization columns, support level indicators, and sector momentum resonance feature to detect coordinated category movements.",
+      "highlights": [
+        "Added signal columns showing all timeframe signals (W/D/4/3/2/1) with 🟢/🔴 support indicators",
+        "Implemented sector momentum resonance feature to detect coordinated category movement (3d change > 5%)",
+        "Improved data sortability and organization for better analysis"
+      ],
+      "version": "v2.1.0",
+      "status": "released",
+      "tags": ["output-format", "sector-momentum", "visualization"],
+      "timeSpent": "4 hours"
     }
   ]
 }
