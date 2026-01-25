@@ -644,6 +644,40 @@
       "status": "released",
       "tags": ["output-format", "sector-momentum", "visualization"],
       "timeSpent": "4 hours"
+    },
+    {
+      "day": 22,
+      "cycleId": "jan-2026",
+      "date": "2026-01-23",
+      "projectId": "trading-scanner",
+      "title": "Sell Signal Detection Added",
+      "description": "Added sell signal (卖出) detection to identify negative indicators for tickers. Provides counter-signal awareness for better risk management.",
+      "highlights": [
+        "Added sell signal (卖出) detection as negative signal indicator",
+        "Integrated sell signals into scoring system for risk awareness",
+        "Enhanced signal output to show both buy and sell signals"
+      ],
+      "version": "v2.2.0",
+      "status": "released",
+      "tags": ["sell-signal", "risk-management", "signal-detection"],
+      "timeSpent": "3 hours"
+    },
+    {
+      "day": 23,
+      "cycleId": "jan-2026",
+      "date": "2026-01-24",
+      "projectId": "trading-scanner",
+      "title": "Tiered Regimes & Logic Refinement",
+      "description": "Implemented tiered regime system with different signal combinations for various market conditions. Refined scoring logic for more accurate signal classification.",
+      "highlights": [
+        "Added tiered regimes with different signal combination requirements",
+        "Refined logic for better signal quality assessment across regimes",
+        "Improved signal classification based on market conditions"
+      ],
+      "version": "v2.3.0",
+      "status": "released",
+      "tags": ["regimes", "signal-combo", "refinement"],
+      "timeSpent": "4 hours"
     }
   ]
 }
