@@ -661,6 +661,23 @@
       "status": "released",
       "tags": ["sell-signal", "risk-management", "signal-detection"],
       "timeSpent": "3 hours"
+    },
+    {
+      "day": 23,
+      "cycleId": "jan-2026",
+      "date": "2026-01-24",
+      "projectId": "trading-scanner",
+      "title": "Tiered Regimes & Logic Refinement",
+      "description": "Implemented tiered regime system with different signal combinations for various market conditions. Refined scoring logic for more accurate signal classification.",
+      "highlights": [
+        "Added tiered regimes with different signal combination requirements",
+        "Refined logic for better signal quality assessment across regimes",
+        "Improved signal classification based on market conditions"
+      ],
+      "version": "v2.3.0",
+      "status": "released",
+      "tags": ["regimes", "signal-combo", "refinement"],
+      "timeSpent": "4 hours"
     }
   ]
 }
