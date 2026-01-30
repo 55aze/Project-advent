@@ -678,6 +678,40 @@
       "status": "released",
       "tags": ["regimes", "signal-combo", "refinement"],
       "timeSpent": "4 hours"
+    },
+    {
+      "day": 24,
+      "cycleId": "jan-2026",
+      "date": "2026-01-25",
+      "projectId": "trading-scanner",
+      "title": "Regime Testing Script",
+      "description": "Wrote test scripts to experiment with new 4 regime ideas. Testing different regime configurations to optimize signal quality and classification.",
+      "highlights": [
+        "Wrote test scripts to experiment with 4 new regime ideas",
+        "Testing different regime configurations for optimal performance",
+        "Validated regime logic with historical data"
+      ],
+      "version": "v2.3.1",
+      "status": "released",
+      "tags": ["testing", "regimes", "experimentation"],
+      "timeSpent": "3 hours"
+    },
+    {
+      "day": 25,
+      "cycleId": "jan-2026",
+      "date": "2026-01-29",
+      "projectId": "trading-scanner",
+      "title": "Regime Logic Testing & Refinement",
+      "description": "Trialed regime testing logic with real data and adjusted classification logic based on results. Refined regime detection for better accuracy.",
+      "highlights": [
+        "Trialed regime testing logic with real market data",
+        "Adjusted classification logic based on testing results",
+        "Refined regime detection for improved accuracy"
+      ],
+      "version": "v2.3.2",
+      "status": "released",
+      "tags": ["testing", "logic-refinement", "regimes"],
+      "timeSpent": "3 hours"
     }
   ]
 }
