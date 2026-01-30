@@ -695,6 +695,23 @@
       "status": "released",
       "tags": ["testing", "regimes", "experimentation"],
       "timeSpent": "3 hours"
+    },
+    {
+      "day": 25,
+      "cycleId": "jan-2026",
+      "date": "2026-01-29",
+      "projectId": "trading-scanner",
+      "title": "Regime Logic Testing & Refinement",
+      "description": "Trialed regime testing logic with real data and adjusted classification logic based on results. Refined regime detection for better accuracy.",
+      "highlights": [
+        "Trialed regime testing logic with real market data",
+        "Adjusted classification logic based on testing results",
+        "Refined regime detection for improved accuracy"
+      ],
+      "version": "v2.3.2",
+      "status": "released",
+      "tags": ["testing", "logic-refinement", "regimes"],
+      "timeSpent": "3 hours"
     }
   ]
 }
