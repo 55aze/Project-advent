@@ -712,6 +712,23 @@
       "status": "released",
       "tags": ["testing", "logic-refinement", "regimes"],
       "timeSpent": "3 hours"
+    },
+    {
+      "day": 26,
+      "cycleId": "jan-2026",
+      "date": "2026-02-02",
+      "projectId": "trading-scanner",
+      "title": "Crypto & Precious Metals Coverage",
+      "description": "Expanded detection list to include cryptocurrency and precious metals (gold/silver). Broader market coverage for diverse signal opportunities.",
+      "highlights": [
+        "Added crypto assets to detection list",
+        "Included gold and silver precious metals coverage",
+        "Expanded market coverage for diverse signal opportunities"
+      ],
+      "version": "v2.4.0",
+      "status": "released",
+      "tags": ["crypto", "precious-metals", "coverage-expansion"],
+      "timeSpent": "2 hours"
     }
   ]
 }
